@@ -23,7 +23,7 @@ setup(
     entry_points={
         'console_scripts': ['roi_convert=src.roi_convertor.__main__:main'],
     },
-    url='https://github.com/abiswas-odu/annotatorj',
+    url='https://github.com/abiswas-odu/roi_convertor',
     license='GNU General Public License v3',
     install_requires=install_requires,
     classifiers=[

@@ -5,8 +5,6 @@ import cv2 as cv
 from src.roi_convertor import roi_encoder
 import zipfile
 
-
-
 def extract_borders(label_image):
     labels = np.unique(label_image[label_image > 0])
     d = {}
