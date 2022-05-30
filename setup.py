@@ -21,7 +21,7 @@ setup(
     description='Perform ROI conversion.',
     long_description_content_type='text/markdown',
     entry_points={
-        'console_scripts': ['roi_convert=src.roi_convertor.__main__:main'],
+        'console_scripts': ['roi_convert=roi_convertor.__main__:main'],
     },
     url='https://github.com/abiswas-odu/roi_convertor',
     license='GNU General Public License v3',

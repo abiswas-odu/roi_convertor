@@ -1,8 +1,7 @@
 import tifffile as tif
 import os
 import numpy as np
-from src.roi_convertor import read_roi
-import zipfile
+from roi_convertor import read_roi
 from csbdeep.io import save_tiff_imagej_compatible
 import cv2 as cv
 

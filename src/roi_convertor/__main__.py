@@ -2,8 +2,8 @@ import click
 import logging
 from time import time
 import os
-from src.roi_convertor.gen_rois import gen_roi
-from src.roi_convertor.gen_tif import gen_tif
+from roi_convertor.gen_rois import gen_roi
+from roi_convertor.gen_tif import gen_tif
 
 __version__ = "1.0"
 

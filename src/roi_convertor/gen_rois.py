@@ -2,7 +2,7 @@ import tifffile as tif
 import os
 import numpy as np
 import cv2 as cv
-from src.roi_convertor import roi_encoder
+from roi_convertor import roi_encoder
 import zipfile
 
 def extract_borders(label_image):
