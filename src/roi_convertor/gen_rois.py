@@ -2,8 +2,8 @@ import tifffile as tif
 import os
 import numpy as np
 import cv2 as cv
-import roi_encoder
-import io_utils
+from .roi_encoder import encode_ij_freehand_roi
+from .io_utils import read_image
 import zipfile
 
 
@@ -54,7 +54,7 @@ def roi_generator_core(Xi, file_prefix, output_dir):
                         roi_file_name = str(i+1) + "_" + str(key) + ".roi"
                         f = open(roi_file_name,"wb")
                         if freehand_points[0].shape == freehand_points[1].shape:
-                            f.write(roi_encoder.encode_ij_freehand_roi(str(key), i+1, freehand_points[0].tolist(), freehand_points[1].tolist()))
+                            f.write(encode_ij_freehand_roi(str(key), i+1, freehand_points[0].tolist(), freehand_points[1].tolist()))
                         else:
                             print("Error! size mismatch in coordinate lists. Slice " + str(i+1) + " Label " + str(key))
                         f.close()
@@ -79,7 +79,7 @@ def gen_roi(input_file):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    Xi = io_utils.read_image(input_file)
+    Xi = read_image(input_file)
     label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     with open(os.path.join(base_dir,file_prefix + '_summary.csv'), 'w') as out_f:
@@ -102,7 +102,7 @@ def gen_roi(input_file, output_dir):
     file_name = os.path.basename(input_file)
     file_prefix = os.path.splitext(file_name)[0]
 
-    Xi = io_utils.read_image(input_file)
+    Xi = read_image(input_file)
     label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     with open(os.path.join(output_dir,file_prefix + '_summary.csv'), 'w') as out_f:

@@ -1,6 +1,6 @@
 import struct
 import numpy as np
-from roi import Roi
+from .roi import Roi
 """	
 Translated from Java source:
 https://imagej.nih.gov/ij/developer/source/ij/io/RoiDecoder.java.html
