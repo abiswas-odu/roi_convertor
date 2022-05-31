@@ -19,10 +19,7 @@ def cli():
 def generate_roi(orig_image_file, output_dir):
     click.echo('Invoking ROI generation...')
     t0 = time()
-    if output_dir and os.path.isdir(output_dir):
-        roi_dir = gen_roi(orig_image_file, output_dir)
-    else:
-        roi_dir = gen_roi(orig_image_file)
+    roi_dir = gen_roi(orig_image_file, output_dir)
     t1 = time() - t0
     click.echo('ROIs generated here:' + roi_dir)
     click.echo("Time elapsed: " + str(t1))

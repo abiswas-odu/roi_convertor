@@ -64,7 +64,7 @@ def roi_generator_core(Xi, file_prefix, output_dir):
     return label_summary_dict
 
 
-def gen_roi(input_file):
+def gen_roi(input_file, output_dir=""):
     """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
     in the same folder as the input image.
     Args:
@@ -75,37 +75,15 @@ def gen_roi(input_file):
     base_dir = os.path.dirname(input_file)
     file_name = os.path.basename(input_file)
     file_prefix = os.path.splitext(file_name)[0]
-    output_dir = os.path.join(base_dir,"stardist_rois")
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    if not output_dir:
+        output_dir = os.path.join(base_dir,"stardist_rois")
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
 
     Xi = read_image(input_file)
     label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     with open(os.path.join(base_dir,file_prefix + '_summary.csv'), 'w') as out_f:
-        out_f.write("slice_id, object_count, object_labels\n")
-        for key in label_summary_dict.keys():
-            out_f.write(str(key+1) + "," + str(len(label_summary_dict[key])) + ",")
-            for label in label_summary_dict[key]:
-                out_f.write(str(label) + "|")
-            out_f.write("\n")
-    return output_dir
-
-def gen_roi(input_file, output_dir):
-    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
-    in the same folder as the input image.
-    Args:
-        image_file: Path to the image file in klb/h5/tif/npy format with the same extensions respectively.
-    Returns:
-        Directory where the ROI files are saved
-    """
-    file_name = os.path.basename(input_file)
-    file_prefix = os.path.splitext(file_name)[0]
-
-    Xi = read_image(input_file)
-    label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
-
-    with open(os.path.join(output_dir,file_prefix + '_summary.csv'), 'w') as out_f:
         out_f.write("slice_id, object_count, object_labels\n")
         for key in label_summary_dict.keys():
             out_f.write(str(key+1) + "," + str(len(label_summary_dict[key])) + ",")
