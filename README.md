@@ -9,6 +9,7 @@ The tool is already installed on della.princeton.edu. Use the following commands
 ```
 module load anaconda3/2021.11
 conda activate /projects/LIGHTSHEET/posfailab/ab50/tools/tf2-posfai_test
+export LD_LIBRARY_PATH=/projects/LIGHTSHEET/posfailab/ab50/tools/keller-lab-block-filetype/build/src
 ```
 
 ### Install on your own machine
