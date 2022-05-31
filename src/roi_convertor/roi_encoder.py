@@ -1,4 +1,4 @@
-import roi_decoder as dec
+import roi_convertor.roi_decoder as dec
 import struct
 
 def RGB_encoder(fA,fR,fG,fB):
