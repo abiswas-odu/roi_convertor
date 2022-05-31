@@ -1,6 +1,6 @@
 import struct
 import numpy as np
-from roi_convertor.roi import Roi
+from roi import Roi
 """	
 Translated from Java source:
 https://imagej.nih.gov/ij/developer/source/ij/io/RoiDecoder.java.html
@@ -312,15 +312,7 @@ def decode_ij_roi(roi,img_shape):
     if(version>=218):
         getStrokeWidthAndColor(roi_b,hdr2Offset)
 
-
-
-
     roi_b.roiType = rtype
-
-
-
-
-
 
     roi_b.setPosition(position);
     if (channel>0 or sliceZ>0 or frame>0):

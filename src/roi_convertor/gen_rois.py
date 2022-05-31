@@ -2,10 +2,18 @@ import tifffile as tif
 import os
 import numpy as np
 import cv2 as cv
-from roi_convertor import roi_encoder
+import roi_encoder
+import io_utils
 import zipfile
 
+
 def extract_borders(label_image):
+    """Obtain a dictionary with the points forming the contours of each region with the same vale in the 2-d array
+    Args:
+        Xi: 2-dimensional numpy array with the image pixels.
+    Returns:
+        Dictionary {label_value, [list of points(x,y)]}
+    """
     labels = np.unique(label_image[label_image > 0])
     d = {}
     for label in labels:
@@ -23,20 +31,16 @@ def extract_borders(label_image):
     return d
 
 
-def gen_roi(input_file):
-    base_dir = os.path.dirname(input_file)
-    file_name = os.path.basename(input_file)
-    file_prefix = os.path.splitext(file_name)[0]
-    output_dir = os.path.join(base_dir,"stardist_rois")
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-
-    Xi = tif.imread(os.path.join(base_dir, file_name))
-
-    Xi = Xi.astype(dtype=np.uint8)
-
+def roi_generator_core(Xi, file_prefix, output_dir):
+    """Generate the ROI files for each frame of the N-dimensional numpy array.
+    Args:
+        Xi: N-dimensional numpy array.
+        file_prefix: Prefix string for the ROI file names.
+        output_dir: The directory to produce the files.
+    Returns:
+        Dictionary with the label count summary for each frame
+    """
     slice_counts = Xi.shape[0]
-
     label_summary_dict={}
     for i in range(0, slice_counts):
         label_contours_dict = extract_borders(Xi[i,:,:])
@@ -57,6 +61,26 @@ def gen_roi(input_file):
                         zipf.write(roi_file_name)
                         os.remove(roi_file_name)
             label_summary_dict[i] = label_list
+    return label_summary_dict
+
+
+def gen_roi(input_file):
+    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
+    in the same folder as the input image.
+    Args:
+        image_file: Path to the image file in klb/h5/tif/npy format with the same extensions respectively.
+    Returns:
+        Directory where the ROI files are saved
+    """
+    base_dir = os.path.dirname(input_file)
+    file_name = os.path.basename(input_file)
+    file_prefix = os.path.splitext(file_name)[0]
+    output_dir = os.path.join(base_dir,"stardist_rois")
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    Xi = io_utils.read_image(input_file)
+    label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     with open(os.path.join(base_dir,file_prefix + '_summary.csv'), 'w') as out_f:
         out_f.write("slice_id, object_count, object_labels\n")
@@ -67,8 +91,38 @@ def gen_roi(input_file):
             out_f.write("\n")
     return output_dir
 
+def gen_roi(input_file, output_dir):
+    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
+    in the same folder as the input image.
+    Args:
+        image_file: Path to the image file in klb/h5/tif/npy format with the same extensions respectively.
+    Returns:
+        Directory where the ROI files are saved
+    """
+    file_name = os.path.basename(input_file)
+    file_prefix = os.path.splitext(file_name)[0]
+
+    Xi = io_utils.read_image(input_file)
+    label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
+
+    with open(os.path.join(output_dir,file_prefix + '_summary.csv'), 'w') as out_f:
+        out_f.write("slice_id, object_count, object_labels\n")
+        for key in label_summary_dict.keys():
+            out_f.write(str(key+1) + "," + str(len(label_summary_dict[key])) + ",")
+            for label in label_summary_dict[key]:
+                out_f.write(str(label) + "|")
+            out_f.write("\n")
+    return output_dir
 
 def gen_roi_narray(Xi, segmentation_file_name):
+    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
+    in the same folder as the input image.
+    Args:
+        Xi: N-dimensional numpy array.
+        segmentation_file_name: name and path of the segmentation output file for the ROI file names.
+    Returns:
+        Directory where the ROI files are saved
+    """
     base_dir = os.path.dirname(segmentation_file_name)
     file_name = os.path.basename(segmentation_file_name)
     file_prefix = os.path.splitext(file_name)[0]
@@ -77,28 +131,7 @@ def gen_roi_narray(Xi, segmentation_file_name):
         os.mkdir(output_dir)
 
     Xi = Xi.astype(dtype=np.uint8)
-    slice_counts = Xi.shape[0]
-
-    label_summary_dict={}
-    for i in range(0, slice_counts):
-        label_contours_dict = extract_borders(Xi[i,:,:])
-        if len(label_contours_dict) > 0:
-            label_list = []
-            with zipfile.ZipFile(os.path.join(output_dir,file_prefix+"_"+str(i+1) + '.zip'), 'w', zipfile.ZIP_DEFLATED) as zipf:
-                for key in label_contours_dict.keys():
-                    label_list.append(key)
-                    freehand_points = np.array(label_contours_dict[key]).T
-                    if freehand_points.ndim > 1:
-                        roi_file_name = str(i+1) + "_" + str(key) + ".roi"
-                        f = open(roi_file_name,"wb")
-                        if freehand_points[0].shape == freehand_points[1].shape:
-                            f.write(roi_encoder.encode_ij_freehand_roi(str(key), i+1, freehand_points[0].tolist(), freehand_points[1].tolist()))
-                        else:
-                            print("Error! size mismatch in coordinate lists. Slice " + str(i+1) + " Label " + str(key))
-                        f.close()
-                        zipf.write(roi_file_name)
-                        os.remove(roi_file_name)
-            label_summary_dict[i] = label_list
+    label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     with open(os.path.join(base_dir,file_prefix + '_summary.csv'), 'w') as out_f:
         out_f.write("slice_id, object_count, object_labels\n")

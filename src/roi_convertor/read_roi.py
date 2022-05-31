@@ -1,40 +1,4 @@
-"""Read ROI files .zip or .roi generated with ImageJ.
-Specifications and code is largely inspired from:
-http://rsb.info.nih.gov/ij/developer/source/ij/io/RoiDecoder.java.html
-
-Developed under Python 3.3 but should easly work on Python 2.7.
-
-Author: HadiM <hadrien.mary@gmail.com>
-License: GPLv3
-Date: 16.11.2013
-Version: 1.0
-Url: https://github.com/bnoi/read_ro
-
-Functions
----------
-
-- read_roi() read .roi file
-- read_roi_zip read .zip file
-
-Note
-----
-
-- Some format specifications are not implemented. See RoiDecoder.java for details.
-- Most of "normal" ROI file should work.
-- Code has not been yet strongly tested.
-- Feel free to hack it and send me modifications.
-- Star me on gist to show me wether this script has been usefull to you !
-
-Changelog
----------
-
-- 31.10.2013 :
-    - initial commit
-
-- 16.11.2013 :
-    - handle ROIs outside borders
-    - can now return negative coordinates
-"""
+"""Read ROI files .zip or .roi generated with ImageJ."""
 
 import os
 import struct
