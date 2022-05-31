@@ -10,7 +10,7 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--segmentation_mask',required=True,
+@click.option('--orig_image_file',required=True,
               type=click.Path(exists=True,file_okay=True,readable=True),
               help="Segmentation output from Stardist.")
 @click.option('--output_dir',required=False,
