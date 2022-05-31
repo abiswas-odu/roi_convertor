@@ -32,7 +32,7 @@ def gen_mask_core(roi_dir, original_segmentated_file, output_directory, output_f
                 cv.drawContours(Xi[i,:,:], [contours], -1, color=(label_val, label_val, label_val), thickness=cv.FILLED)
 
     output_file = os.path.join(output_directory, file_prefix+"_SegmentationCorrected")
-    write_image(Xi, output_file, output_format)
+    output_file = write_image(Xi, output_file, output_format)
     return output_file
 
 def gen_tif(input_file):

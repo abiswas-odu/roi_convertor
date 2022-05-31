@@ -90,3 +90,4 @@ def write_image(labels, out_image_file, output_format):
     else:
         segmentation_file_name = out_image_file + ".tif"
         save_tiff_imagej_compatible(segmentation_file_name, labels.astype('uint16'), axes='ZYX')
+    return segmentation_file_name
