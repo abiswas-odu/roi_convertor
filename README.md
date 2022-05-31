@@ -1,8 +1,8 @@
-#roi_convertor: Convert Segmentation Output to ROI and Back
+# roi_convertor: Convert Segmentation Output to ROI and Back
 
-# Installation 
+## Installation 
 
-## Install on Della
+### Install on Della
 
 The tool is already installed on della.princeton.edu. Use the following commands to load the environment:  
 
@@ -11,7 +11,7 @@ module load anaconda3/2021.11
 conda activate /projects/LIGHTSHEET/posfailab/ab50/tools/tf2-posfai_test
 ```
 
-## Install on your own machine
+### Install on your own machine
 
 You can run the following commands to install the tool in your own conda environment. I have intentionally separated the 
 pyklb install because it causes problems on certain machines. So you must ensure that you have it installed correctly on 
@@ -26,15 +26,13 @@ cd roi_convertor
 pip install .
 ```
 
-# Generating ROI Files from Segmentation Output for Correction 
+## Generating ROI Files from Segmentation Output for Correction 
 
-## Commandline Options
+### Commandline Options
 
 ```roi_convert generate-roi --help```
 
-## Example Command
-
-### Short version 
+### Example Command: Short Version 
 
 This produces the ROIs in a directory named ```stardist_rois``` in same directory as the input image
 
@@ -42,25 +40,23 @@ This produces the ROIs in a directory named ```stardist_rois``` in same director
 
 The input can be in klb/h5/tif/npy formats with these extensions. 
 
-### Long version 
+### Example Command: Long Version 
 
 This produces the ROIs in a directory of your choice and in a format of your choice
 
 ```roi_convert generate-roi --orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif --output_dir test_rois```
 
-# Generating Segmented Image with Labels from ROIs
+## Generating Segmented Image with Labels from ROIs
 
 This command is used to generate segmented labeled image from ROIs. 
 
 **The ROIs zips must be named as <orig_image_name>_<slice_id>.zip.**
 
-## Commandline Options
+### Commandline Options
 
 ```roi_convert generate-mask --help```
 
-## Example Command
-
-### Short version 
+### Example Command: Short Version 
 
 This assumes the ROIs are in a directory named ```stardist_rois``` in same directory as the original input image used to generate the ROIs
 
@@ -68,7 +64,7 @@ This assumes the ROIs are in a directory named ```stardist_rois``` in same direc
 
 The original input image can be in klb/h5/tif/npy formats with these extensions.
 
-### Long version
+### Example Command: Long Version
 
 This lets the user specify all the details. 
 
