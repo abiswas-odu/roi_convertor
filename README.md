@@ -51,7 +51,13 @@ This produces the ROIs in a directory of your choice and in a format of your cho
 
 This command is used to generate segmented labeled image from ROIs. 
 
-**The ROIs zips must be named as <orig_image_name>_<slice_id>.zip.**
+### File Naming Conventions 
+
+**The naming of the ROI zip files and the ROIs are very important for correct operation of the tool.** 
+
+1. The ROI zip file for each slice must be named as <orig_image_file_name>_<slice_id>.zip.
+
+2. Each ROI from ROI Manager must be named as <slice_id>_<label_id>. **Where the label_id connects the cell across slices.**   
 
 ### Commandline Options
 
