@@ -1,7 +1,10 @@
 import os
 import numpy as np
 import h5py
-import pyklb
+try:
+    import pyklb
+except ImportError:
+    print("pyklb install missing! All klb format operations will fail. ")
 import tifffile as tif
 from csbdeep.io import save_tiff_imagej_compatible
 

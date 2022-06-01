@@ -1,4 +1,3 @@
-import tifffile as tif
 import os
 import numpy as np
 from .read_roi import read_roi_zip
@@ -16,10 +15,10 @@ def gen_mask_core(roi_dir, original_segmentated_file, output_directory, output_f
 
     # Load ROIs and color
     for i in range(0, slice_counts):
+        Xi[i,:,:] = 0
         roi_zip_file = os.path.join(roi_dir, file_prefix+"_"+str(i+1) + '.zip')
         if os.path.exists(roi_zip_file):
             roi_dict = read_roi_zip(roi_zip_file)
-            Xi[i,:,:] = 0
             for key in roi_dict.keys():
                 label_val = int(float(key.split("_")[1]))
                 coord_x = roi_dict[key]['x']
