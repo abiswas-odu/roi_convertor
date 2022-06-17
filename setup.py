@@ -14,7 +14,7 @@ install_requires = [
 setup(
     name="roi_convertor",
     python_requires='>=3.7',
-    version='0.2a',
+    version='0.3a',
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     author='Posfai lab development team.',

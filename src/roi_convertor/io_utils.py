@@ -13,7 +13,7 @@ def read_image(image_path_file):
     Args:
         image_path_file: Path to the image file in klb/h5/tif/npy format with the same extensions respectively.
     Returns:
-        N-dimensional numpy array with the image pixels in 8-bit format
+        N-dimensional numpy array with the image pixels in 8/16/32-bit format
     Raises:
         ValueError: if the path is not found.
         ValueError: if the image is not in one of the required formats.
