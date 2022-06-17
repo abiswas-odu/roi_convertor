@@ -39,8 +39,8 @@ def read_image(image_path_file):
         Xi = pyklb.readfull(image_path_file)
 
     # convert to 8-bit by 4-bit shift
-    Xi = Xi >> 4
-    Xi = Xi.astype(dtype=np.uint8)
+    # Xi = Xi >> 4
+    # Xi = Xi.astype(dtype=np.uint8)
     print('loaded image shape:', Xi.shape)
     return Xi
 
