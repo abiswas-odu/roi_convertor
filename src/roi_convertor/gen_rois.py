@@ -111,14 +111,15 @@ def gen_roi_narray(Xi, segmentation_file_name):
     Xi = Xi.astype(dtype=np.uint8)
     label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
-    with open(os.path.join(base_dir,file_prefix + '_summary.csv'), 'w') as out_f:
+    op_summary_file = os.path.join(base_dir,file_prefix + '_summary.csv')
+    with open(op_summary_file, 'w') as out_f:
         out_f.write("slice_id, object_count, object_labels\n")
         for key in label_summary_dict.keys():
             out_f.write(str(key+1) + "," + str(len(label_summary_dict[key])) + ",")
             for label in label_summary_dict[key]:
                 out_f.write(str(label) + "|")
             out_f.write("\n")
-    return output_dir
+    return op_summary_file
 
 
 #contours,hierarchy = cv.findContours(Xi[23,:,:], cv.RETR_TREE, cv.CHAIN_APPROX_NONE)

@@ -11,10 +11,16 @@ install_requires = [
 ##    'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild',
 ]
 
+def read_version():
+    """Read the version from the appropriate place in the library."""
+    for line in open(os.path.join("src","roi_convertor",'__main__.py'), 'r'):
+        if line.startswith('__version__'):
+            return line.split('=')[-1].strip().strip('"')
+
 setup(
     name="roi_convertor",
     python_requires='>=3.7',
-    version='0.3a',
+    version=read_version(),
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     author='Posfai lab development team.',

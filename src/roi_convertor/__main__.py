@@ -3,7 +3,7 @@ from time import time
 from .gen_rois import gen_roi
 from .gen_tif import gen_tif, gen_mask_core
 import os
-__version__ = "0.3a"
+__version__ = "0.4a"
 
 @click.group()
 def cli():

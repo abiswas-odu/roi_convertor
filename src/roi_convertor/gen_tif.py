@@ -12,11 +12,14 @@ def gen_mask_core(roi_dir, original_segmentated_file, output_directory, output_f
     # Read the labeled mask
     Xi = read_image(original_segmentated_file)
     slice_counts = Xi.shape[0]
-
+    # Blank canvas to draw the contours into
+    Xi[:, :, :] = 0
     # Load ROIs and color
     for i in range(0, slice_counts):
-        Xi[i,:,:] = 0
         roi_zip_file = os.path.join(roi_dir, file_prefix+"_"+str(i+1) + '.zip')
+        # Check if label suffix exists
+        if not os.path.exists(roi_zip_file):
+            roi_zip_file = os.path.join(roi_dir, file_prefix+".label_"+str(i+1) + '.zip')
         if os.path.exists(roi_zip_file):
             roi_dict = read_roi_zip(roi_zip_file)
             for key in roi_dict.keys():
