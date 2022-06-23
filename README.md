@@ -36,7 +36,7 @@ roi_convert --help
 
 #### MacOS Install
 
-1. Download and install **Python 3.9** version of Miniconda for MacOS: https://docs.conda.io/en/latest/miniconda.html#windows-installers
+1. Download and install **Python 3.9** version of Miniconda for MacOS: https://docs.conda.io/en/latest/miniconda.html#macos-installers
 
 2. Open "Terminal" and create a conda environment and activate it:
 ```
