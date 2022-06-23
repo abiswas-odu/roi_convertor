@@ -14,9 +14,7 @@ export LD_LIBRARY_PATH=/projects/LIGHTSHEET/posfailab/ab50/tools/keller-lab-bloc
 
 ### Install on your own machine
 
-You can run the following commands to install the tool in your own conda environment. I have intentionally separated the 
-pyklb install because it causes problems on certain machines. So you must ensure that you have it installed correctly on 
-your machine. 
+You can run the following commands to install the tool in your own conda environment.
 
 #### Windows Install
 
