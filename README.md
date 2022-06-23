@@ -17,14 +17,39 @@ export LD_LIBRARY_PATH=/projects/LIGHTSHEET/posfailab/ab50/tools/keller-lab-bloc
 You can run the following commands to install the tool in your own conda environment. I have intentionally separated the 
 pyklb install because it causes problems on certain machines. So you must ensure that you have it installed correctly on 
 your machine. 
-```
-# Try the wheels build; Did not work for me. I had to compile the binary.  
-pip install git+https://github.com/bhoeckendorf/pyklb.git@skbuild
 
-# Once pyklb is installed... 
-git clone https://github.com/abiswas-odu/roi_convertor.git
-cd roi_convertor
-pip install .
+#### Windows Install
+
+1. Download and install **Python 3.9** version of Miniconda for Windows: https://docs.conda.io/en/latest/miniconda.html#windows-installers
+
+2. **Login**, download and install Visual Studio 2022 Professional to build pyklb: https://visualstudio.microsoft.com/vs 
+
+3. Open "Command Prompt" and create a conda environment and activate it:
+```
+conda create -n segmentation python=3.9
+conda activate segmentation
+```
+
+4. Install the ROI convertor:
+```
+pip install git+https://github.com/abiswas-odu/roi_convertor.git
+roi_convert --help
+```
+
+#### MacOS Install
+
+1. Download and install **Python 3.9** version of Miniconda for MacOS: https://docs.conda.io/en/latest/miniconda.html#windows-installers
+
+2. Open "Terminal" and create a conda environment and activate it:
+```
+conda create -n segmentation python=3.9
+conda activate segmentation
+```
+
+3. Install the ROI convertor:
+```
+pip install git+https://github.com/abiswas-odu/roi_convertor.git
+roi_convert --help
 ```
 
 ## Generating ROI Files from Segmentation Output for Correction 
