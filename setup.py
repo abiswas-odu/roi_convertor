@@ -7,7 +7,7 @@ install_requires = [
     'csbdeep',
     'opencv-python',
     'tifffile',
-    'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
+#    'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
 ]
 
 def read_version():
