@@ -65,7 +65,7 @@ def roi_generator_core(Xi, file_prefix, output_dir):
 
 
 def gen_roi(input_file, output_dir=""):
-    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
+    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder rois
     in the same folder as the input image.
     Args:
         image_file: Path to the image file in klb/h5/tif/npy format with the same extensions respectively.
@@ -76,7 +76,7 @@ def gen_roi(input_file, output_dir=""):
     file_name = os.path.basename(input_file)
     file_prefix = os.path.splitext(file_name)[0]
     if not output_dir:
-        output_dir = os.path.join(base_dir,"stardist_rois")
+        output_dir = os.path.join(base_dir,"rois")
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
@@ -93,7 +93,7 @@ def gen_roi(input_file, output_dir=""):
     return output_dir
 
 def gen_roi_narray(Xi, segmentation_file_name):
-    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
+    """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder rois
     in the same folder as the input image.
     Args:
         Xi: N-dimensional numpy array.
@@ -104,7 +104,7 @@ def gen_roi_narray(Xi, segmentation_file_name):
     base_dir = os.path.dirname(segmentation_file_name)
     file_name = os.path.basename(segmentation_file_name)
     file_prefix = os.path.splitext(file_name)[0]
-    output_dir = os.path.join(base_dir,"stardist_rois")
+    output_dir = os.path.join(base_dir,"rois")
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
