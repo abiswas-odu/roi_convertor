@@ -18,7 +18,7 @@ def extract_borders(label_image):
     d = {}
     for label in labels:
         y = label_image == label
-        y = y * 255
+        y = y * 65535
         y = y.astype('uint8')
         contours, hierarchy = cv.findContours(y, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
@@ -108,7 +108,7 @@ def gen_roi_narray(Xi, segmentation_file_name):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    Xi = Xi.astype(dtype=np.uint8)
+    Xi = Xi.astype(dtype=np.uint16)
     label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     op_summary_file = os.path.join(base_dir,file_prefix + '_summary.csv')
