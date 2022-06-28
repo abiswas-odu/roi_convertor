@@ -18,7 +18,7 @@ def read_version():
 
 setup(
     name="roi_convertor",
-    python_requires='>=3.9',
+    python_requires='>=3.7',
     version=read_version(),
     package_dir={"": "src"},
     packages=find_packages(where="src"),
