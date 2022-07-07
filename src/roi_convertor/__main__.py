@@ -1,7 +1,7 @@
 import click
 from time import time
 from .gen_rois import gen_roi
-from .gen_tif import gen_tif, gen_mask_core
+from .gen_tif import gen_mask_core
 import os
 __version__ = "0.5a"
 
@@ -43,7 +43,9 @@ def generate_mask(orig_image_file, roi_dir, output_dir, output_format):
     if output_dir and roi_dir and os.path.isdir(roi_dir) and os.path.isdir(output_dir):
         hand_corrected_tif = gen_mask_core(roi_dir, orig_image_file, output_dir, output_format)
     else:
-        hand_corrected_tif = gen_tif(orig_image_file)
+        base_dir = os.path.dirname(orig_image_file)
+        roi_dir = os.path.join(base_dir, "rois")
+        hand_corrected_tif = gen_mask_core(roi_dir, orig_image_file, base_dir, output_format)
     t1 = time() - t0
     click.echo('Hand corrected mask generated:' + hand_corrected_tif)
     click.echo("Time elapsed: " + str(t1))
