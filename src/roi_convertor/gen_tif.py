@@ -37,13 +37,6 @@ def gen_mask_core(roi_dir, original_segmentated_file, output_directory, output_f
     output_file = write_image(Xi, output_file, output_format)
     return output_file
 
-def gen_tif(input_file):
-    base_dir = os.path.dirname(input_file)
-    file_name = os.path.basename(input_file)
-    file_prefix = os.path.splitext(file_name)[0]
-    roi_dir = os.path.join(base_dir, "stardist_rois")
-    output_file = gen_mask_core(roi_dir, input_file, base_dir, "tif")
-    return output_file
 
 
 
