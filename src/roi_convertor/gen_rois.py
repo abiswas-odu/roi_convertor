@@ -109,7 +109,7 @@ def gen_roi_narray(Xi, segmentation_file_name):
         os.mkdir(output_dir)
 
     Xi = Xi.astype(dtype=np.uint8)
-    label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
+    label_summary_dict = roi_generator_core(Xi,file_prefix, output_dir)
 
     op_summary_file = os.path.join(base_dir,file_prefix + '_summary.csv')
     with open(op_summary_file, 'w') as out_f:
