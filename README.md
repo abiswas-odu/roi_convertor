@@ -99,3 +99,19 @@ The original input image can be in klb/h5/tif/npy formats with these extensions.
 This lets the user specify all the details. 
 
 ```roi_convert generate-mask --orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif --roi_dir stardist_rois --output_dir . --output_format klb ```
+
+## Generating Hand Correction Guide for Segmented Image
+
+This command is used to generate hand correction guide for segmented labeled images.
+
+### Commandline Options
+
+```roi_convert generate-analytics --help```
+
+### Example Command
+
+The command can take single images of whole directories with the segmented files named in the way ```stardist_inference``` names them. 
+
+```roi_convert generate-analytics --orig_image /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test_3/multi_test_klb --segmentation_image /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test_3/multi_test_klb_segmentation --output_file hand_correction_guide.csv```
+
+The original input image can be in klb/h5/tif/npy formats with these extensions.
