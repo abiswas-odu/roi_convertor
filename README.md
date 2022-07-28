@@ -110,6 +110,11 @@ This command is used to generate hand correction guide for segmented labeled ima
 
 The command can take single images of whole directories with the segmented files named in the way ```stardist_inference``` names them. 
 
-```roi_convert generate-analytics --orig_image /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test_3/multi_test_klb --segmentation_image /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test_3/multi_test_klb_segmentation --output_file hand_correction_guide.csv```
+```
+roi_convert generate-analytics 
+--orig_image /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test_3/multi_test_klb 
+--segmentation_image /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test_3/multi_test_klb_segmentation 
+--output_file hand_correction_guide.csv
+```
 
 The original input image can be in klb/h5/tif/npy formats with these extensions.
