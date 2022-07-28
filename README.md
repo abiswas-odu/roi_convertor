@@ -52,11 +52,11 @@ roi_convert --help
 
 ## Generating ROI Files from Segmentation Output for Correction 
 
-### Commandline Options
+**Commandline Options**
 
 ```roi_convert generate-roi --help```
 
-### Example Command: Short Version 
+**Example Command: Short Version** 
 
 This produces the ROIs in a directory named ```stardist_rois``` in same directory as the input image
 
@@ -64,7 +64,7 @@ This produces the ROIs in a directory named ```stardist_rois``` in same director
 
 The input can be in klb/h5/tif/npy formats with these extensions. 
 
-### Example Command: Long Version 
+**Example Command: Long Version** 
 
 This produces the ROIs in a directory of your choice and in a format of your choice
 
@@ -74,19 +74,17 @@ This produces the ROIs in a directory of your choice and in a format of your cho
 
 This command is used to generate segmented labeled image from ROIs. 
 
-### File Naming Conventions 
-
-**The naming of the ROI zip files and the ROIs are very important for correct operation of the tool.** 
+**File Naming Conventions: The naming of the ROI zip files and the ROIs are very important for correct operation of the tool.** 
 
 1. The ROI zip file for each slice must be named as <orig_image_file_name>_<slice_id>.zip.
 
 2. Each ROI from ROI Manager must be named as <slice_id>_<label_id>. **Where the label_id connects the cell across slices.**   
 
-### Commandline Options
+**Commandline Options**
 
 ```roi_convert generate-mask --help```
 
-### Example Command: Short Version 
+**Example Command: Short Version** 
 
 This assumes the ROIs are in a directory named ```stardist_rois``` in same directory as the original input image used to generate the ROIs
 
@@ -94,7 +92,7 @@ This assumes the ROIs are in a directory named ```stardist_rois``` in same direc
 
 The original input image can be in klb/h5/tif/npy formats with these extensions.
 
-### Example Command: Long Version
+**Example Command: Long Version**
 
 This lets the user specify all the details. 
 
@@ -104,11 +102,11 @@ This lets the user specify all the details.
 
 This command is used to generate hand correction guide for segmented labeled images.
 
-### Commandline Options
+**Commandline Options**
 
 ```roi_convert generate-analytics --help```
 
-### Example Command
+**Example Command**
 
 The command can take single images of whole directories with the segmented files named in the way ```stardist_inference``` names them. 
 
