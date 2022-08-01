@@ -7,6 +7,7 @@ install_requires = [
     'csbdeep',
     'opencv-python',
     'tifffile',
+    'scikit-image',
     'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
 ]
 
