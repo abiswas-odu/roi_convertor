@@ -145,6 +145,6 @@ This command is used to generate the list of differences between the original RO
 
 ```
 roi_convert roi-diff 
---orig_roi_dir "C:\Users\ab50\Documents\git\posfai_cell_tracking\test\multi_test klb\orig_stardist_rois" 
---corrected_roi_dir "C:\Users\ab50\Documents\git\posfai_cell_tracking\test\multi_test klb\stardist_rois"
+--orig_roi_dir orig_stardist_rois 
+--corrected_roi_dir stardist_rois
 ```
