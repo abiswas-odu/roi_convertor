@@ -4,7 +4,6 @@ from skimage.measure import label, regionprops, regionprops_table
 from skimage import morphology
 from .io_utils import read_image
 import os
-from csbdeep.io import save_tiff_imagej_compatible
 
 
 def append_hand_correction_guide(segmentation_image, orig_image, output_file, runFNTest=False):

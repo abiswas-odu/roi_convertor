@@ -1,11 +1,16 @@
-import sys
 import zipfile
 
-# Either file name or directory
-orig_roi_dir = sys.argv[1]
+def check_if_diff(zipfile_1, zipfile_2):
 
-curr_roi_dir = sys.argv[2]
+    zf_set_1 = set(zipfile.ZipFile(zipfile_1).namelist())
+    zf_set_2 = set(zipfile.ZipFile(zipfile_2).namelist())
 
-for
-zf = zipfile.ZipFile(zip_path)
-for n in zf.namelist():
+    if zf_set_1 == zf_set_2:
+        return False, [], []
+    else:
+        zf_only_1 = list(zf_set_1-zf_set_2)
+        zf_only_2 = list(zf_set_2-zf_set_1)
+        return True,zf_only_1,zf_only_2
+
+
+

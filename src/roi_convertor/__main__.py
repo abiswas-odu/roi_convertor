@@ -2,9 +2,10 @@ import click
 from time import time
 from .gen_rois import gen_roi
 from .gen_tif import gen_mask_core
+from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 import os
-__version__ = "0.6a"
+__version__ = "0.7a"
 
 @click.group()
 def cli():
@@ -26,31 +27,62 @@ def generate_roi(segmentation_image_file, output_dir):
     click.echo("Time elapsed: " + str(t1))
 
 @cli.command()
-@click.option('--orig_image_file', required=True,
-              type=click.Path(exists=True,file_okay=True,readable=True),
-              help= "Original image file or segmentation output.")
+@click.option('--orig_image', required=True,
+              type=click.Path(exists=True,file_okay=True,dir_okay=True,readable=True),
+              help= "Original image file or directory with the files.")
 @click.option('--roi_dir', required=False,
-              type=click.Path(exists=True,dir_okay=True,readable=True),
+              type=click.Path(exists=True,dir_okay=True,file_okay=False,readable=True),
               help= "Directory with ROI files. The files must be named as <orig_file_name>_<slice_id>.zip")
 @click.option('--output_dir', required=False,
-              type=click.Path(exists=True,dir_okay=True,readable=True),
+              type=click.Path(exists=True,dir_okay=True,file_okay=False,readable=True),
               help= "Output directory to save the segmentation mask output.")
 @click.option("--output_format", required=False, default="tif",
     type=click.Choice(["klb","h5","tif","npy"]),
     help="The output format klb/h5/tif/npy.")
-def generate_mask(orig_image_file, roi_dir, output_dir, output_format):
+def generate_mask(orig_image, roi_dir, output_dir, output_format):
     click.echo('Invoking mask generation...')
     t0 = time()
     if output_dir and roi_dir and os.path.isdir(roi_dir) and os.path.isdir(output_dir):
-        hand_corrected_tif = gen_mask_core(roi_dir, orig_image_file, output_dir, output_format)
+        if os.path.isdir(orig_image):
+            result = [os.path.join(dp, f)
+                      for dp, dn, filenames in os.walk(orig_image)
+                      for f in filenames if (os.path.splitext(f)[1] == '.klb' or
+                                             os.path.splitext(f)[1] == '.h5' or
+                                             os.path.splitext(f)[1] == '.tif' or
+                                             os.path.splitext(f)[1] == '.npy')]
+            for image_file in result:
+                print("Processing image:", image_file)
+                file_name = os.path.basename(image_file)
+                file_prefix = os.path.splitext(file_name)[0]
+                file_ext = os.path.splitext(file_name)[1]
+                hand_corrected_tif = gen_mask_core(roi_dir, image_file, output_dir, output_format)
+                click.echo('Hand corrected mask generated:' + hand_corrected_tif)
+        else:
+            hand_corrected_tif = gen_mask_core(roi_dir, orig_image, output_dir, output_format)
+            click.echo('Hand corrected mask generated:' + hand_corrected_tif)
     else:
-        base_dir = os.path.dirname(orig_image_file)
-        roi_dir = os.path.join(base_dir, "stardist_rois")
-        hand_corrected_tif = gen_mask_core(roi_dir, orig_image_file, base_dir, output_format)
+        if os.path.isdir(orig_image):
+            roi_dir = os.path.join(orig_image, "stardist_rois")
+            result = [os.path.join(dp, f)
+                      for dp, dn, filenames in os.walk(orig_image)
+                      for f in filenames if (os.path.splitext(f)[1] == '.klb' or
+                                             os.path.splitext(f)[1] == '.h5' or
+                                             os.path.splitext(f)[1] == '.tif' or
+                                             os.path.splitext(f)[1] == '.npy')]
+            for image_file in result:
+                print("Processing image:", image_file)
+                file_name = os.path.basename(image_file)
+                file_prefix = os.path.splitext(file_name)[0]
+                file_ext = os.path.splitext(file_name)[1]
+                hand_corrected_tif = gen_mask_core(roi_dir, image_file, orig_image, output_format)
+                click.echo('Hand corrected mask generated:' + hand_corrected_tif)
+        else:
+            base_dir = os.path.dirname(orig_image)
+            roi_dir = os.path.join(base_dir, "stardist_rois")
+            hand_corrected_tif = gen_mask_core(roi_dir, orig_image, base_dir, output_format)
+            click.echo('Hand corrected mask generated:' + hand_corrected_tif)
     t1 = time() - t0
-    click.echo('Hand corrected mask generated:' + hand_corrected_tif)
     click.echo("Time elapsed: " + str(t1))
-
 
 @cli.command()
 @click.option('--orig_image', required=True,
@@ -90,6 +122,59 @@ def generate_analytics(orig_image, segmentation_image, output_file, check_fn):
         click.echo('Please provide either input files or directories, combinations are not supported.')
     t1 = time() - t0
     click.echo('Analytics file generated:' + output_file)
+    click.echo("Time elapsed: " + str(t1))
+
+@cli.command()
+@click.option('--orig_roi_dir', required=True,
+              type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
+              help= "ROI directory generated from segmentation.")
+@click.option('--corrected_roi_dir',required=True,
+              type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
+              help="ROI directory edited by hand correction.")
+def roi_diff(orig_roi_dir, corrected_roi_dir):
+    click.echo('Invoking diff generation...')
+    t0 = time()
+    orig_zf_list = []
+    for zf in os.listdir(orig_roi_dir):
+        if zf.endswith('.zip'):
+            orig_zf_list.append(zf)
+
+    corrected_zf_list = []
+    for zf in os.listdir(corrected_roi_dir):
+        if zf.endswith('.zip'):
+            corrected_zf_list.append(zf)
+
+    zdir_only_orig = list(set(orig_zf_list)-set(corrected_zf_list))
+    zdir_only_corrected = list(set(corrected_zf_list)-set(orig_zf_list))
+
+    zdir_common = set(orig_zf_list).intersection(set(corrected_zf_list))
+
+    # File level diff
+    diff_list = []
+    for only_file in zdir_only_orig:
+        diff_list.append(only_file + ',' + 'Present' + ',' + 'Absent')
+    for only_file in zdir_only_corrected:
+        diff_list.append(only_file + ',' + 'Absent' + ',' + 'Present')
+
+    for common_file in zdir_common:
+        is_diff, orig_only, corrected_only = check_if_diff(os.path.join(orig_roi_dir,common_file),
+                   os.path.join(corrected_roi_dir,common_file))
+        if is_diff:
+            orig_only_labels = "|".join(os.path.splitext(roi_name)[0] for roi_name in orig_only)
+            corrected_only_labels = "|".join(os.path.splitext(roi_name)[0] for roi_name in corrected_only)
+            diff_list.append(common_file + ',' + orig_only_labels + ',' + corrected_only_labels)
+
+    if diff_list:
+        output_file = "diff_report.csv"
+        click.echo("Differences found! Report: {0}".format(output_file))
+        with open(output_file,'w') as f_out:
+            f_out.write('ROI_file,Oiginal ROI Set,Corrected ROI Set\n')
+            for line in diff_list:
+                f_out.write(line + '\n')
+    else:
+        click.echo("No Differences found!")
+
+    t1 = time() - t0
     click.echo("Time elapsed: " + str(t1))
 
 def main():

@@ -53,26 +53,30 @@ roi_convert --help
 ## Generating ROI Files from Segmentation Output for Correction 
 
 **Commandline Options**
-
 ```roi_convert generate-roi --help```
 
 **Example Command: Short Version** 
 
 This produces the ROIs in a directory named ```stardist_rois``` in same directory as the input image
-
-```roi_convert generate-roi --orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif```
+```
+roi_convert generate-roi 
+--orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif
+```
 
 The input can be in klb/h5/tif/npy formats with these extensions. 
 
 **Example Command: Long Version** 
 
-This produces the ROIs in a directory of your choice and in a format of your choice
-
-```roi_convert generate-roi --orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif --output_dir test_rois```
+This produces the ROIs in a directory of your choice and in a format of your choice.
+```
+roi_convert generate-roi 
+--orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif 
+--output_dir test_rois
+```
 
 ## Generating Segmented Image with Labels from ROIs
 
-This command is used to generate segmented labeled image from ROIs. 
+This command is used to generate segmented labeled image from ROIs and the file or **directory** pointing to the original image(s). 
 
 **File Naming Conventions: The naming of the ROI zip files and the ROIs are very important for correct operation of the tool.** 
 
@@ -86,9 +90,13 @@ This command is used to generate segmented labeled image from ROIs.
 
 **Example Command: Short Version** 
 
-This assumes the ROIs are in a directory named ```stardist_rois``` in same directory as the original input image used to generate the ROIs
+This assumes the ROIs are in a directory named ```stardist_rois``` in same directory as the original input image(s) used to generate the ROIs.
+**The `--orig_image` parameter can be a single file or directory.** 
 
-```roi_convert generate-mask --orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif```
+```
+roi_convert generate-mask 
+--orig_image /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test
+```
 
 The original input image can be in klb/h5/tif/npy formats with these extensions.
 
@@ -96,7 +104,13 @@ The original input image can be in klb/h5/tif/npy formats with these extensions.
 
 This lets the user specify all the details. 
 
-```roi_convert generate-mask --orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif --roi_dir stardist_rois --output_dir . --output_format klb ```
+```
+roi_convert generate-mask 
+--orig_image /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test 
+--roi_dir stardist_rois 
+--output_dir . 
+--output_format klb
+```
 
 ## Generating Hand Correction Guide for Segmented Image
 
@@ -108,7 +122,7 @@ This command is used to generate hand correction guide for segmented labeled ima
 
 **Example Command**
 
-The command can take single images of whole directories with the segmented files named in the way ```stardist_inference``` names them. 
+The command can take single images or whole directories with the segmented files named in the way ```stardist_inference``` names them. 
 
 ```
 roi_convert generate-analytics 
@@ -118,3 +132,19 @@ roi_convert generate-analytics
 ```
 
 The original input image can be in klb/h5/tif/npy formats with these extensions.
+
+## Generating Diff Report 
+
+This command is used to generate the list of differences between the original ROIs and the corrected ROIs.
+
+**Commandline Options**
+
+```roi_convert roi-diff --help```
+
+**Example Command**
+
+```
+roi_convert roi-diff 
+--orig_roi_dir "C:\Users\ab50\Documents\git\posfai_cell_tracking\test\multi_test klb\orig_stardist_rois" 
+--corrected_roi_dir "C:\Users\ab50\Documents\git\posfai_cell_tracking\test\multi_test klb\stardist_rois"
+```
