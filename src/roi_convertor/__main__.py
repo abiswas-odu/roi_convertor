@@ -5,7 +5,7 @@ from .gen_tif import gen_mask_core
 from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 import os
-__version__ = "0.7a"
+__version__ = "0.8a"
 
 @click.group()
 def cli():

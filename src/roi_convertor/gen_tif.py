@@ -23,15 +23,17 @@ def gen_mask_core(roi_dir, original_segmentated_file, output_directory, output_f
         if os.path.exists(roi_zip_file):
             roi_dict = read_roi_zip(roi_zip_file)
             for key in roi_dict.keys():
-                label_val = int(float(key.split("_")[1]))
-                coord_x = roi_dict[key]['x']
-                coord_y = roi_dict[key]['y']
-                coord_list = []
-                for j in range(0,len(coord_y)):
-                    coord_list.append([coord_x[j],coord_y[j]])
-                #contours = np.array(coord_list)
-                contours = np.array(coord_list).reshape((-1,1,2)).astype(np.int32)
-                cv.drawContours(Xi[i,:,:], [contours], -1, color=(label_val, label_val, label_val), thickness=cv.FILLED)
+                try:
+                    label_val = int(float(key.split("_")[1]))
+                    coord_x = roi_dict[key]['x']
+                    coord_y = roi_dict[key]['y']
+                    coord_list = []
+                    for j in range(0,len(coord_y)):
+                        coord_list.append([coord_x[j],coord_y[j]])
+                    contours = np.array(coord_list).reshape((-1,1,2)).astype(np.int32)
+                    cv.drawContours(Xi[i,:,:], [contours], -1, color=(label_val, label_val, label_val), thickness=cv.FILLED)
+                except ValueError:
+                    print("Invalid ROI label: {0}".format(key))
 
     output_file = os.path.join(output_directory, file_prefix+"_SegmentationCorrected")
     output_file = write_image(Xi, output_file, output_format)

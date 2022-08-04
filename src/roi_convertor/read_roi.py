@@ -302,7 +302,10 @@ def read_roi_zip(zip_path):
     """
     """
     rois = {}
-    zf = zipfile.ZipFile(zip_path)
-    for n in zf.namelist():
-        rois.update(read_roi(zf.open(n)))
+    try:
+        zf = zipfile.ZipFile(zip_path)
+        for n in zf.namelist():
+            rois.update(read_roi(zf.open(n)))
+    except zipfile.BadZipFile:
+        print("Error reading Zip. Invalid zip file, skipping...:{0}".format(zip_path))
     return rois
