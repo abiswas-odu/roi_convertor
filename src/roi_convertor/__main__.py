@@ -5,7 +5,7 @@ from .gen_tif import gen_mask_core
 from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 import os
-__version__ = "0.8a"
+__version__ = "0.9a"
 
 @click.group()
 def cli():
@@ -112,8 +112,11 @@ def generate_analytics(orig_image, segmentation_image, output_file, check_fn):
             file_prefix = os.path.splitext(file_name)[0]
             file_ext = os.path.splitext(file_name)[1]
             segmentation_image_file = os.path.join(segmentation_image,file_prefix + ".label" + file_ext)
+            segmentation_image_file_corrected = os.path.join(segmentation_image,file_prefix + "_SegmentationCorrected" + file_ext)
             if os.path.isfile(segmentation_image_file):
                 append_hand_correction_guide(segmentation_image_file, image_file, output_file, check_fn)
+            elif os.path.isfile(segmentation_image_file_corrected):
+                append_hand_correction_guide(segmentation_image_file_corrected, image_file, output_file, check_fn)
             else:
                 click.echo('Segmentation output not found. Expected file:' + segmentation_image_file)
     elif os.path.isfile(orig_image) and os.path.isfile(segmentation_image):
