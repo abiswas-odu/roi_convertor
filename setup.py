@@ -8,7 +8,7 @@ install_requires = [
     'opencv-python',
     'tifffile',
     'scikit-image',
-    'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
+    #'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
 ]
 
 def read_version():
