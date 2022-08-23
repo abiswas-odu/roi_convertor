@@ -36,12 +36,15 @@ def generate_roi(segmentation_image_file, output_dir):
               help="Output directory to save the crops.")
 @click.option('--output_format','-f', required=False, default="klb", type=click.Choice(['klb','h5','tif','npy']),
             help='The output format klb/h5/tif/npy.')
-@click.option("--gen_mip_viz", is_flag=True, help="Generate MIP visualization TIF of cropped images. [CONSUMES DISK SPACE]", default=False)
+@click.option("--gen_mip_viz", required=False, type=click.Choice(["True", "False"]),
+              help="Generate MIP visualization TIF of cropped images. [CONSUMES DISK SPACE]",
+              default="False")
 @click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT,
             help="The first timestamp to use for cropping.")
 @click.option("--timestamp_max","-te", required=False, default=-1, type=click.INT,
             help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
-@click.option("--generate_plots", is_flag=True, help="Generate cropping plots.", default=False)
+@click.option("--generate_plots", required=False, type=click.Choice(["True", "False"]),
+              help="Generate cropping plots.", default="False")
 @click.option("--filter_window_size","-ws", required=False, default=100, type=click.FLOAT,
             help="The size of the uniform filter applied to the images.")
 @click.option("--filter_threshold","-thresh", required=False, default=0.1, type=click.FLOAT,

@@ -11,13 +11,17 @@
 IMAGE_PATH="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left"
 OUT_DIR="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left_crop"
 OUT_FORMAT="klb"
+timestamp_min="0"
+timestamp_max="10"
 
 ##===================================================================================================
 ##=====================CHANGES BELOW THIS LINE FOR ADVANCED USERS====================================
 ##===================================================================================================
 
-timestamp_min="50"
-timestamp_max="55"
+filter_window_size="100"
+threshold_after_filter="0.1"
+generate_plots="True"
+gen_mip="True"
 
 ##===================================================================================================
 ##==============================NO CHANGES BELOW THIS LINE===========================================
@@ -35,12 +39,12 @@ conda activate /projects/LIGHTSHEET/posfailab/ab50/tools/tf2-posfai
 
 roi_convert generate-cropboxes --orig_image_dir ${IMAGE_PATH} \
   --output_dir ${OUT_DIR} \
-  -tb 50 \
-  -te 55 \
-  --generate_plots \
-  --gen_mip_viz \
-  -ws 100 \
-  -thresh 0.1
+  -tb ${timestamp_mim} \
+  -te ${timestamp_max} \
+  --generate_plots ${generate_plots} \
+  --gen_mip_viz ${gen_mip} \
+  -ws ${filter_window_size} \
+  -thresh ${threshold_after_filter}
 
 echo Ending time is $(date)
 endtime=$(date +"%s")
