@@ -149,6 +149,61 @@ roi_convert roi-diff
 --corrected_roi_dir stardist_rois
 ```
 
-# Generating and Visualizing Cropboxes
+# Generating and Visualizing Cropboxes on DELLA
+
+To generate cropboxes and visualize the MIPs on DELLA, do the following: 
+
+1. Copy the scripts into a folder of your choice:
+```
+cp /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/scripts/runGenCropboxes.cmd <MY PATH>
+cp /tigress/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/scripts/runVizCropboxes.cmd <MY PATH>
+```
+2. Edit the `runGenCropboxes.cmd` script with an editor after copying on your laptop or directly. Change the following lines:
+```
+IMAGE_PATH="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left_long"
+OUT_DIR="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left_crop"
+timestamp_min="0"
+timestamp_max="10"
+```
+Point the IMAGE_PATH to your original KLB files and the OUT_DIR to any directory you want to save the cropbox results. 
+Edit the `timestamp_min` and `timestamp_max` to the first and last frames. **Please test with a smaller range first!**
+
+3. The code is talking about 2GB per frame. So, if you are running 100 images then set the memory required as 250GB in the line:
+```
+#SBATCH --mem=250G                # total memory per node 
+```
+It's near the top of the script. 
+
+4. Run the script and wait for it to finish. 
+```
+sbatch runGenCropboxes.cmd 
+```
+
+5. Inspect the results log file. The run should produce a file called `slurm-42221536.out`. Read it: 
+```commandline
+cat slurm-42221536.out
+```
+If it says, **WARNING!!! Multiple crop boxes found. Need to select one for membrane cropping.**, then we have to view the profiles. 
+Otherwise, the cropbox index is 0. Move to step 7. 
+
+6. View the crop profiles. Download the crop_x.png files and view them. It is likely clear which is the correct cropbox. Note the cropbox index.
+
+7. To generate the MIPs for the selected cropbox index, Edit the `runVizCropboxes.cmd` script with an editor after copying on your laptop or directly. Change the following lines:
+```commandline
+IMAGE_PATH="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left"
+CROP_DIR="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left_crop"
+timestamp_min="0"
+timestamp_max="10"
+crop_box_index="0"
+```
+Point the IMAGE_PATH to your original KLB files, and the CROP_DIR to the output directory from the previous script. 
+Edit the `timestamp_min` and `timestamp_max` to the first and last frames. 
+Finally, change the `crop_box_index` to the index of the cropbox you want to use. 
+
+4. Run the script and wait for it to finish.
+```
+sbatch runVizCropboxes.cmd 
+```
+
 
 
