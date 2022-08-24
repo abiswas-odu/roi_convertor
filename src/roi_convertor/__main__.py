@@ -34,11 +34,6 @@ def generate_roi(segmentation_image_file, output_dir):
 @click.option('--output_dir',required=True,
               type=click.Path(exists=True,dir_okay=True,readable=True),
               help="Output directory to save the crops.")
-@click.option('--output_format','-f', required=False, default="klb", type=click.Choice(['klb','h5','tif','npy']),
-            help='The output format klb/h5/tif/npy.')
-@click.option("--gen_mip_viz", required=False, type=click.Choice(["True", "False"]),
-              help="Generate MIP visualization TIF of cropped images. [CONSUMES DISK SPACE]",
-              default="False")
 @click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT,
             help="The first timestamp to use for cropping.")
 @click.option("--timestamp_max","-te", required=False, default=-1, type=click.INT,
@@ -49,14 +44,13 @@ def generate_roi(segmentation_image_file, output_dir):
             help="The size of the uniform filter applied to the images.")
 @click.option("--filter_threshold","-thresh", required=False, default=0.1, type=click.FLOAT,
             help="The thresholding applied to the image after the uniform filtering.")
-def generate_cropboxes(orig_image_dir, output_dir, output_format,
-                  gen_mip_viz, timestamp_min, timestamp_max,
+def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
                   generate_plots, filter_window_size, filter_threshold):
 
     click.echo('Invoking crop box generation...')
     t0 = time()
     box_count = gen_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
-                  generate_plots, filter_window_size, filter_threshold, gen_mip_viz)
+                  generate_plots, filter_window_size, filter_threshold)
     t1 = time() - t0
 
     click.echo('Crop boxes generated. Number of boxes: ' + str(box_count))
@@ -74,6 +68,8 @@ def generate_cropboxes(orig_image_dir, output_dir, output_format,
 @click.option('--crop_file_dir',required=True,
               type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
               help="The directory with hpair.csv and vpair.csv generated with generate-cropboxes.")
+@click.option("--cropbox_index","-cbi", required=False, default=0, type=click.INT,
+              help="The cropbox to visualize for cropping.")
 @click.option('--output_dir',required=True,
               type=click.Path(exists=True,dir_okay=True,readable=True),
               help="Output directory to save the crops.")
@@ -85,20 +81,41 @@ def generate_cropboxes(orig_image_dir, output_dir, output_format,
               help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
 @click.option("--offset","-of", required=False, default=150, type=click.INT,
               help="The offset used during cropping.")
-@click.option("--offset","-of", required=False, default=150, type=click.INT,
-              help="The offset used during cropping.")
 @click.option("--x_y_scaling","-x_y_sc", required=False, default=0.208, type=click.FLOAT,
               help="The multiple used for X and Y axis scaling.")
 @click.option("--z_scaling","-z_sc", required=False, default=2, type=click.FLOAT,
               help="The multiple used for Z axis scaling.")
-def crop_images(orig_image_dir, crop_file_dir, output_dir, output_format,
+def crop_images(orig_image_dir, crop_file_dir, cropbox_index, output_dir, output_format,
                 timestamp_min, timestamp_max, offset, x_y_scaling, z_scaling):
     click.echo('Cropping images...')
     t0 = time()
-    generate_crops(orig_image_dir, crop_file_dir, output_dir, timestamp_min,
+    generate_crops(orig_image_dir, crop_file_dir, output_dir, cropbox_index, timestamp_min,
                    timestamp_max, offset, x_y_scaling, z_scaling, output_format)
     t1 = time() - t0
     click.echo('Cropped files generated here:' + output_dir)
+    click.echo("Time elapsed: " + str(t1))
+
+@cli.command()
+@click.option('--orig_image_dir',required=True,
+              type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
+              help="Original klb/tif/h5/npy files.")
+@click.option('--crop_file_dir',required=True,
+              type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True,writable=True),
+              help="The directory with hpair.csv and vpair.csv generated with generate-cropboxes.")
+@click.option("--cropbox_index","-cbi", required=True, type=click.INT,
+              help="The cropbox to visualize for cropping.")
+@click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT,
+              help="The first timestamp to use for cropping.")
+@click.option("--timestamp_max","-te", required=False, default=-1, type=click.INT,
+              help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
+@click.option("--offset","-of", required=False, default=150, type=click.INT,
+              help="The offset used during cropping.")
+def visualize_crops(orig_image_dir, crop_file_dir, cropbox_index, timestamp_min, timestamp_max, offset):
+    click.echo('Generating cropped MIP images...')
+    t0 = time()
+    visualize_cropboxes(orig_image_dir, crop_file_dir, cropbox_index, timestamp_min, timestamp_max, offset)
+    t1 = time() - t0
+    click.echo('Cropped MIPs generated here:' + crop_file_dir)
     click.echo("Time elapsed: " + str(t1))
 
 @cli.command()

@@ -148,3 +148,7 @@ roi_convert roi-diff
 --orig_roi_dir orig_stardist_rois 
 --corrected_roi_dir stardist_rois
 ```
+
+# Generating and Visualizing Cropboxes
+
+
