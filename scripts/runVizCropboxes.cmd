@@ -8,12 +8,11 @@
 #SBATCH -A molbio
 
 
-IMAGE_PATH="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left"
+IMAGE_PATH="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left_long"
 CROP_DIR="/tigress/LIGHTSHEET/posfailab/ab50/data/210809_Cdx2_HaloYAP_H2B_mTmG_whole_embryo/stack_3_channel_2_obj_left_crop"
-OUT_FORMAT="klb"
 timestamp_min="0"
 timestamp_max="10"
-crop_box_index="0"
+crop_box_index="1"
 
 ##===================================================================================================
 ##==============================NO CHANGES BELOW THIS LINE===========================================
@@ -32,7 +31,7 @@ conda activate /projects/LIGHTSHEET/posfailab/ab50/tools/tf2-posfai
 roi_convert visualize-crops --orig_image_dir ${IMAGE_PATH} \
   --crop_file_dir ${CROP_DIR} \
   -cbi ${crop_box_index} \
-  -tb ${timestamp_mim} \
+  -tb ${timestamp_min} \
   -te ${timestamp_max}
 
 echo Ending time is $(date)
