@@ -156,6 +156,6 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
                                        preserve_range = True,
                                        anti_aliasing = True)
             file_base = os.path.basename(image_file).split(os.extsep)
-            write_image(a, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
+            write_image(cur_box_resc_low, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
     except Exception as e:
         print('Cropbox visualization produced and error:', e)
