@@ -7,9 +7,21 @@
 The tool is already installed on della.princeton.edu. Use the following commands to load the environment:  
 
 ```
+module purge
 module load anaconda3/2021.11
 conda activate /projects/LIGHTSHEET/posfailab/ab50/tools/tf2-posfai
 export LD_LIBRARY_PATH=/projects/LIGHTSHEET/posfailab/ab50/tools/keller-lab-block-filetype/build/src
+```
+
+#### NEW!!! Requesting compute node
+
+For long running commands like `generate-mask` and `generate-analytics` should not be run on the login node. Please use the 
+command below to first request a compute-node and then setup the above environment there and run the command. 
+
+The command to request for a compute-node is: 
+
+```commandline
+salloc --nodes=1 --ntasks=8 --mem=10G --time=02:00:00
 ```
 
 ### Install on your own machine
