@@ -15,7 +15,7 @@ export LD_LIBRARY_PATH=/projects/LIGHTSHEET/posfailab/ab50/tools/keller-lab-bloc
 
 #### NEW!!! Requesting compute node
 
-For long running commands like `generate-mask` and `generate-analytics` should not be run on the login node. Please use the 
+Long-running commands like `generate-mask` and `generate-analytics` should not be run on the login node. Please use the 
 command below to first request a compute-node and then setup the above environment there and run the command. 
 
 The command to request for a compute-node is: 
