@@ -6,9 +6,10 @@ from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 from .gen_crops import *
 import os
-__version__ = "1.0"
+__version__ = "1.1"
 
 @click.group()
+@click.version_option(__version__)
 def cli():
     pass
 
@@ -40,9 +41,9 @@ def generate_roi(segmentation_image_file, output_dir):
             help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
 @click.option("--generate_plots", required=False, type=click.Choice(["True", "False"]),
               help="Generate cropping plots.", default="False")
-@click.option("--filter_window_size","-ws", required=False, default=100, type=click.FLOAT, show_defaults=True,
+@click.option("--filter_window_size","-ws", required=False, default=100, type=click.FLOAT, show_default=True,
             help="The size of the uniform filter applied to the images.")
-@click.option("--filter_threshold","-thresh", required=False, default=0.1, type=click.FLOAT, show_defaults=True,
+@click.option("--filter_threshold","-thresh", required=False, default=0.1, type=click.FLOAT, show_default=True,
             help="The thresholding applied to the image after the uniform filtering.")
 def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
                   generate_plots, filter_window_size, filter_threshold):
@@ -68,22 +69,22 @@ def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
 @click.option('--crop_file_dir',required=True,
               type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
               help="The directory with hpair.csv and vpair.csv generated with generate-cropboxes.")
-@click.option("--cropbox_index","-cbi", required=False, default=0, type=click.INT, show_defaults=True,
+@click.option("--cropbox_index","-cbi", required=False, default=0, type=click.INT, show_default=True,
               help="The cropbox to visualize for cropping.")
 @click.option('--output_dir',required=True,
               type=click.Path(exists=True,dir_okay=True,readable=True),
               help="Output directory to save the crops.")
 @click.option('--output_format','-f', required=False, default="klb", type=click.Choice(['klb','h5','tif','npy']),
               help='The output format klb/h5/tif/npy.')
-@click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT, show_defaults=True,
+@click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT, show_default=True,
               help="The first timestamp to use for cropping.")
-@click.option("--timestamp_max","-te", required=False, default=-1, type=click.INT, show_defaults=True,
+@click.option("--timestamp_max","-te", required=False, default=-1, type=click.INT, show_default=True,
               help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
-@click.option("--offset","-of", required=False, default=150, type=click.INT, show_defaults=True,
+@click.option("--offset","-of", required=False, default=150, type=click.INT, show_default=True,
               help="The offset used during cropping.")
-@click.option("--x_y_scaling","-x_y_sc", required=False, default=0.208, type=click.FLOAT, show_defaults=True,
+@click.option("--x_y_scaling","-x_y_sc", required=False, default=0.208, type=click.FLOAT, show_default=True,
               help="The multiple used for X and Y axis scaling.")
-@click.option("--z_scaling","-z_sc", required=False, default=2, type=click.FLOAT, show_defaults=True,
+@click.option("--z_scaling","-z_sc", required=False, default=2, type=click.FLOAT, show_default=True,
               help="The multiple used for Z axis scaling.")
 def crop_images(orig_image_dir, crop_file_dir, cropbox_index, output_dir, output_format,
                 timestamp_min, timestamp_max, offset, x_y_scaling, z_scaling):
