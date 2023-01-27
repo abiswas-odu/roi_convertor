@@ -159,6 +159,7 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
                                        anti_aliasing = True)
                 write_image(cur_box_resc_low, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
             else:
+                cur_box = np.ascontiguousarray(cur_box)
                 write_image(cur_box, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
     except Exception as e:
         print('Cropbox visualization produced and error:', e)
