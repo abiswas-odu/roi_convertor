@@ -124,7 +124,7 @@ def visualize_cropboxes(orig_image_dir: str, crop_dir: str, cropbox_index, time_
 
 def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index,
                    time_min: int = 0, time_max: int = -1, offset: int = 0,
-                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif'):
+                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif', do_rescale: bool = True):
     try:
         vpairs = pd.read_csv(os.path.join(crop_dir, 'vpairs.csv'), index_col=[0])
         hpairs = pd.read_csv(os.path.join(crop_dir, 'hpairs.csv'), index_col=[0])
@@ -151,11 +151,14 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
             image_file = str(im)
             a = read_image(image_file)
             cur_box = a[:, crop_y_min:crop_y_max, crop_x_min:crop_x_max]
-            cur_box_resc_low = rescale(cur_box,
+            file_base = os.path.basename(image_file).split(os.extsep)
+            if do_rescale:
+                cur_box_resc_low = rescale(cur_box,
                                        (1/(2*x_y_sc), 1/(2*z_sc), 1/(2*z_sc)),
                                        preserve_range = True,
                                        anti_aliasing = True)
-            file_base = os.path.basename(image_file).split(os.extsep)
-            write_image(cur_box_resc_low, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
+                write_image(cur_box_resc_low, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
+            else:
+                write_image(cur_box, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
     except Exception as e:
         print('Cropbox visualization produced and error:', e)

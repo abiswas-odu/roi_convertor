@@ -6,7 +6,7 @@ from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 from .gen_crops import *
 import os
-__version__ = "1.1"
+__version__ = "1.2"
 
 @click.group()
 @click.version_option(__version__)
@@ -86,12 +86,14 @@ def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
               help="The multiple used for X and Y axis scaling.")
 @click.option("--z_scaling","-z_sc", required=False, default=2, type=click.FLOAT, show_default=True,
               help="The multiple used for Z axis scaling.")
+@click.option("--no_rescale_crop", "-no_rescale", is_flag=True,
+              help="The multiple used for Z axis scaling.")
 def crop_images(orig_image_dir, crop_file_dir, cropbox_index, output_dir, output_format,
-                timestamp_min, timestamp_max, offset, x_y_scaling, z_scaling):
+                timestamp_min, timestamp_max, offset, x_y_scaling, z_scaling, no_rescale_crop):
     click.echo('Cropping images...')
     t0 = time()
     generate_crops(orig_image_dir, crop_file_dir, output_dir, cropbox_index, timestamp_min,
-                   timestamp_max, offset, x_y_scaling, z_scaling, output_format)
+                   timestamp_max, offset, x_y_scaling, z_scaling, output_format, not no_rescale_crop)
     t1 = time() - t0
     click.echo('Cropped files generated here:' + output_dir)
     click.echo("Time elapsed: " + str(t1))
