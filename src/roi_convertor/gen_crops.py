@@ -124,6 +124,7 @@ def visualize_cropboxes(orig_image_dir: str, crop_dir: str, cropbox_index, time_
         images = np.sort(images)
         for im in images[time_min:time_max + 1]:
             image_file = str(im)
+            print('Processing:', image_file, flush=True)
             a = read_image(image_file)
             file_base = os.path.basename(image_file).split(os.extsep)
             timepoint = file_base[0].split('_')[-1]
@@ -161,6 +162,7 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
         images = np.sort(images)
         for im in images[time_min:time_max + 1]:
             image_file = str(im)
+            print('Processing:', image_file, flush=True)
             a = read_image(image_file)
             cur_box = a[:, crop_y_min:crop_y_max, crop_x_min:crop_x_max]
             file_base = os.path.basename(image_file).split(os.extsep)
