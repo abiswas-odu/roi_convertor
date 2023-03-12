@@ -28,12 +28,22 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
 
     # Sort images in order of timestamp
     images = np.sort(images)
+
+    # Check if some images are found
+    if len(images) == 0:
+        raise ValueError('No images found to generate cropboxes for.')
+
+    # Generate a sum of images by loading the first one to get the shape an initialize the sum array
+    image = read_image(str(images[0]))
+    sum_of_images = np.zeros(image.shape)
     for im in images[time_min:time_max+1]:
         a = read_image(str(im))
         corrected = a[:,:,:].astype('float64')-a[-1,:,:].astype('float64')
-        all_ims.append(corrected)
-    all_ims = np.array(all_ims)
-    corrected = all_ims.mean(0)
+        sum_of_images = sum_of_images + corrected
+
+    # Compute the average of the image
+    corrected = sum_of_images / len(images[time_min:time_max+1])
+
     # sm1 = ndimage.uniform_filter(corrected.mean(1).mean(0), filter_window_size)
     sm2 = ndimage.uniform_filter(corrected.mean(2).mean(0), filter_window_size)
     if plot:
@@ -75,6 +85,7 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
                     if os.path.exists(os.path.join(out_dir,'crop_' + str(found_pair_index) + '.png')):
                         os.remove(os.path.join(out_dir,'crop_' + str(found_pair_index) + '.png'))
                     plt.savefig(os.path.join(out_dir,'crop_' + str(found_pair_index) + '.png'))
+                    plt.close()
                 found_pair_index = found_pair_index + 1
         except Exception as e:
             print('Cropbox generation produced and error:', e)
