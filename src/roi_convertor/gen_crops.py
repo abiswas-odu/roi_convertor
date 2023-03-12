@@ -37,6 +37,7 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
     image = read_image(str(images[0]))
     sum_of_images = np.zeros(image.shape)
     for im in images[time_min:time_max+1]:
+        print('Processing:', str(im), flush=True)
         a = read_image(str(im))
         corrected = a[:,:,:].astype('float64')-a[-1,:,:].astype('float64')
         sum_of_images = sum_of_images + corrected
