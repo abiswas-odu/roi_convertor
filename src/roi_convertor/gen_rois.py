@@ -18,7 +18,7 @@ def extract_borders(label_image):
     d = {}
     for label in labels:
         y = label_image == label
-        y = y * 65535
+        y = y * 255
         y = y.astype('uint8')
         contours, hierarchy = cv.findContours(y, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
