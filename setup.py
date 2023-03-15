@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 install_requires = [
     'click',
     'csbdeep',
-    'opencv-python',
+    'opencv-python=4.5.5.64',
     'tifffile',
 #    'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
 ]
