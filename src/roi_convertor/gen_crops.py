@@ -61,8 +61,7 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
     bndrs = np.where((vboxes[1:] - vboxes[:-1])!=0)[0]
 
     if len(bndrs) % 2 != 0:
-        print('Something wrong with boundaries. Inspect plot...')
-        return
+        raise ValueError('Something wrong with boundaries. Inspect plot.')
     else:
         num_boxes['all'] = len(bndrs) // 2
     vpairs_potential['all'] = [(to_even(bndrs[2*k]), to_even(bndrs[2*k+1])) for k in range(num_boxes['all'])]
