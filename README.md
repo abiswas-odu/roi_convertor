@@ -13,7 +13,7 @@ conda activate /projects/LIGHTSHEET/posfailab/ab50/tools/tf2-posfai
 export LD_LIBRARY_PATH=/projects/LIGHTSHEET/posfailab/ab50/tools/keller-lab-block-filetype/build/src
 ```
 
-#### NEW!!! Requesting compute node
+#### Requesting compute node
 
 Long-running commands like `generate-mask` and `generate-analytics` should not be run on the login node. Please use the 
 command below to first request a compute-node and then setup the above environment there and run the command. 
@@ -217,5 +217,6 @@ Finally, change the `crop_box_index` to the index of the cropbox you want to use
 sbatch runVizCropboxes.cmd 
 ```
 
+# Rescaling Images 
 
 

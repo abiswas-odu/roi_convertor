@@ -176,3 +176,30 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
                 write_image(cur_box, os.path.join(output_dir, file_base[0] + '.crop'), output_format)
     except Exception as e:
         print('Cropbox visualization produced and error:', e)
+
+
+def rescale_images(image_dir: str, output_dir: str, time_min: int = 0, time_max: int = -1,
+                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif'):
+    try:
+        images = [os.path.join(dp, f)
+                  for dp, dn, filenames in os.walk(image_dir)
+                  for f in filenames if (os.path.splitext(f)[1] == '.klb' or
+                                         os.path.splitext(f)[1] == '.h5' or
+                                         os.path.splitext(f)[1] == '.tif' or
+                                         os.path.splitext(f)[1] == '.npy')]
+        if time_max == -1:
+            time_max = len(images) - 1
+
+        # Sort images in order of timestamp
+        images = np.sort(images)
+        for im in images[time_min:time_max + 1]:
+            image_file = str(im)
+            print('Processing:', image_file, flush=True)
+            a = read_image(image_file)
+            file_base = os.path.basename(image_file).split(os.extsep)
+            cur_box_resc_low = rescale(a, (1/(2*x_y_sc), 1/(2*z_sc), 1/(2*z_sc)),
+                                       preserve_range = True,
+                                       anti_aliasing = True)
+            write_image(cur_box_resc_low, os.path.join(output_dir, file_base[0] + '.rescale'), output_format)
+    except Exception as e:
+        print('Rescaling produced and error:', e)

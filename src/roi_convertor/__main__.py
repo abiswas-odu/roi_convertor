@@ -6,12 +6,14 @@ from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 from .gen_crops import *
 import os
-__version__ = "1.3"
+__version__ = "1.4"
+
 
 @click.group()
 @click.version_option(__version__)
 def cli():
     pass
+
 
 @cli.command()
 @click.option('--segmentation_image_file',required=True,
@@ -27,6 +29,7 @@ def generate_roi(segmentation_image_file, output_dir):
     t1 = time() - t0
     click.echo('ROIs generated here:' + roi_dir)
     click.echo("Time elapsed: " + str(t1))
+
 
 @cli.command()
 @click.option('--orig_image_dir',required=True,
@@ -61,6 +64,7 @@ def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
         click.echo('WARNING!!! Multiple crop boxes found. Need to select one for membrane cropping.')
 
     click.echo("Time elapsed: " + str(t1))
+
 
 @cli.command()
 @click.option('--orig_image_dir',required=True,
@@ -98,6 +102,35 @@ def crop_images(orig_image_dir, crop_file_dir, cropbox_index, output_dir, output
     click.echo('Cropped files generated here:' + output_dir)
     click.echo("Time elapsed: " + str(t1))
 
+
+@cli.command()
+@click.option('--orig_image_dir',required=True,
+              type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
+              help="Original klb/tif/h5/npy files.")
+@click.option('--output_dir',required=True,
+              type=click.Path(exists=True,dir_okay=True,readable=True),
+              help="Output directory to save the crops.")
+@click.option('--output_format','-f', required=False, default="klb", type=click.Choice(['klb','h5','tif','npy']),
+              help='The output format klb/h5/tif/npy.')
+@click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT, show_default=True,
+              help="The first timestamp to use for cropping.")
+@click.option("--timestamp_max","-te", required=False, default=-1, type=click.INT, show_default=True,
+              help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
+@click.option("--x_y_scaling","-x_y_sc", required=False, default=0.208, type=click.FLOAT, show_default=True,
+              help="The multiple used for X and Y axis scaling.")
+@click.option("--z_scaling","-z_sc", required=False, default=2, type=click.FLOAT, show_default=True,
+              help="The multiple used for Z axis scaling.")
+def rescale_images(orig_image_dir, output_dir, output_format,
+                timestamp_min, timestamp_max, x_y_scaling, z_scaling):
+    click.echo('Rescale images...')
+    t0 = time()
+    rescale_images(orig_image_dir, output_dir, timestamp_min, timestamp_max,
+                   x_y_scaling, z_scaling, output_format)
+    t1 = time() - t0
+    click.echo('Rescaled files generated here:' + output_dir)
+    click.echo("Time elapsed: " + str(t1))
+
+
 @cli.command()
 @click.option('--orig_image_dir',required=True,
               type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True),
@@ -120,6 +153,7 @@ def visualize_crops(orig_image_dir, crop_file_dir, cropbox_index, timestamp_min,
     t1 = time() - t0
     click.echo('Cropped MIPs generated here:' + crop_file_dir)
     click.echo("Time elapsed: " + str(t1))
+
 
 @cli.command()
 @click.option('--orig_image', required=True,
@@ -179,6 +213,7 @@ def generate_mask(orig_image, roi_dir, output_dir, output_format):
     t1 = time() - t0
     click.echo("Time elapsed: " + str(t1))
 
+
 @cli.command()
 @click.option('--orig_image', required=True,
               type=click.Path(exists=True,file_okay=True,dir_okay=True,readable=True),
@@ -221,6 +256,7 @@ def generate_analytics(orig_image, segmentation_image, output_file, check_fn):
     t1 = time() - t0
     click.echo('Analytics file generated:' + output_file)
     click.echo("Time elapsed: " + str(t1))
+
 
 @cli.command()
 @click.option('--orig_roi_dir', required=True,
@@ -266,7 +302,7 @@ def roi_diff(orig_roi_dir, corrected_roi_dir):
         output_file = "diff_report.csv"
         click.echo("Differences found! Report: {0}".format(output_file))
         with open(output_file,'w') as f_out:
-            f_out.write('ROI_file,Oiginal ROI Set,Corrected ROI Set\n')
+            f_out.write('ROI_file, Original ROI Set,Corrected ROI Set\n')
             for line in diff_list:
                 f_out.write(line + '\n')
     else:

@@ -9,6 +9,7 @@ install_requires = [
     'tifffile',
     'scikit-image',
     'pandas',
+    'h5py',
     'pyklb @ git+https://github.com/bhoeckendorf/pyklb.git@skbuild'
 ]
 
