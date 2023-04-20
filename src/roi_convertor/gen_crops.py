@@ -98,7 +98,8 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
     return num_boxes['all']
 
 
-def visualize_cropboxes(orig_image_dir: str, crop_dir: str, cropbox_index, time_min=0, time_max=-1, offset=150):
+def visualize_cropboxes(orig_image_dir: os.PathLike, crop_dir: os.PathLike, output_dir: os.PathLike,
+ cropbox_index: int, time_min:int = 0, time_max: int = -1, offset:int = 150):
     try:
         vpairs = pd.read_csv(os.path.join(crop_dir, 'vpairs.csv'), index_col=[0])
         hpairs = pd.read_csv(os.path.join(crop_dir, 'hpairs.csv'), index_col=[0])
@@ -129,7 +130,7 @@ def visualize_cropboxes(orig_image_dir: str, crop_dir: str, cropbox_index, time_
             timepoint = file_base[0].split('_')[-1]
             cropped_mip = np.array(a).max(0)[crop_y_min:crop_y_max, crop_x_min:crop_x_max]
             cropped_mip = np.expand_dims(cropped_mip, axis=0)
-            write_image(cropped_mip, os.path.join(crop_dir, file_base[0] + '_crop_MIP'), 'tif')
+            write_image(cropped_mip, os.path.join(output_dir, file_base[0] + '_crop_MIP'), 'tif')
     except Exception as e:
         print('Cropbox visualization produced and error:', e)
 

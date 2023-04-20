@@ -6,7 +6,7 @@ from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 from .gen_crops import *
 import os
-__version__ = "1.4"
+__version__ = "1.5"
 
 
 @click.group()
@@ -138,6 +138,9 @@ def rescale_images(orig_image_dir, output_dir, output_format,
 @click.option('--crop_file_dir',required=True,
               type=click.Path(exists=True,file_okay=False,dir_okay=True,readable=True,writable=True),
               help="The directory with hpair.csv and vpair.csv generated with generate-cropboxes.")
+@click.option('--output_dir',required=True,
+              type=click.Path(exists=True, dir_okay=True, readable=True),
+              help="Output directory to save the crop MIPs.")
 @click.option("--cropbox_index","-cbi", required=True, type=click.INT,
               help="The cropbox to visualize for cropping.")
 @click.option("--timestamp_min","-tb", required=False, default=0, type=click.INT,
@@ -149,7 +152,8 @@ def rescale_images(orig_image_dir, output_dir, output_format,
 def visualize_crops(orig_image_dir, crop_file_dir, cropbox_index, timestamp_min, timestamp_max, offset):
     click.echo('Generating cropped MIP images...')
     t0 = time()
-    visualize_cropboxes(orig_image_dir, crop_file_dir, cropbox_index, timestamp_min, timestamp_max, offset)
+    visualize_cropboxes(orig_image_dir, crop_file_dir, output_dir, 
+                        cropbox_index, timestamp_min, timestamp_max, offset)
     t1 = time() - t0
     click.echo('Cropped MIPs generated here:' + crop_file_dir)
     click.echo("Time elapsed: " + str(t1))
