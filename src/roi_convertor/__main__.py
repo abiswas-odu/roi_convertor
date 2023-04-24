@@ -6,7 +6,7 @@ from .gen_diff_rois import check_if_diff
 from .gen_analytics import append_hand_correction_guide
 from .gen_crops import *
 import os
-__version__ = "1.5"
+from . import __version__
 
 
 @click.group()
