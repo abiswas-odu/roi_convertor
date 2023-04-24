@@ -1,5 +1,5 @@
 from src.roi_convertor.gen_rois import gen_roi
-from .test_utils import *
+from test_utils import *
 import os.path
 import shutil
 
