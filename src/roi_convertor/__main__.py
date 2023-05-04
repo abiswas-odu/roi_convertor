@@ -22,6 +22,8 @@ def cli():
 @click.option('--output_dir',required=False,
               type=click.Path(exists=True,dir_okay=True,readable=True),
               help="ROI output directory.")
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The first timestamp to use for cropping.")
 def generate_roi(segmentation_image_file, output_dir):
     click.echo('Invoking ROI generation...')
     t0 = time()
