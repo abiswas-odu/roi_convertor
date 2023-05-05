@@ -11,7 +11,7 @@ def to_even(x):
 
 
 def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
-                  filter_window_size=100, threshold_after_filter=0.1, gen_viz = False):
+                  filter_window_size=100, threshold_after_filter=0.1, num_threads: int = 1):
     vpairs_potential = {}
     vpairs = {}
     hpairs = {}
@@ -34,11 +34,11 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
         raise ValueError('No images found to generate cropboxes for.')
 
     # Generate a sum of images by loading the first one to get the shape an initialize the sum array
-    image = read_image(str(images[0]))
+    image = read_image(str(images[0]), num_threads)
     sum_of_images = np.zeros(image.shape)
     for im in images[time_min:time_max+1]:
         print('Processing:', str(im), flush=True)
-        a = read_image(str(im))
+        a = read_image(str(im), num_threads)
         corrected = a[:,:,:].astype('float64')-a[-1,:,:].astype('float64')
         sum_of_images = sum_of_images + corrected
 
@@ -99,7 +99,7 @@ def gen_cropboxes(orig_image_dir, out_dir, time_min=0, time_max=-1, plot=True,
 
 
 def visualize_cropboxes(orig_image_dir: os.PathLike, crop_dir: os.PathLike, output_dir: os.PathLike,
- cropbox_index: int, time_min:int = 0, time_max: int = -1, offset:int = 150):
+ cropbox_index: int, time_min:int = 0, time_max: int = -1, offset:int = 150, num_threads: int = 1):
     try:
         vpairs = pd.read_csv(os.path.join(crop_dir, 'vpairs.csv'), index_col=[0])
         hpairs = pd.read_csv(os.path.join(crop_dir, 'hpairs.csv'), index_col=[0])
@@ -125,7 +125,7 @@ def visualize_cropboxes(orig_image_dir: os.PathLike, crop_dir: os.PathLike, outp
         for im in images[time_min:time_max + 1]:
             image_file = str(im)
             print('Processing:', image_file, flush=True)
-            a = read_image(image_file)
+            a = read_image(image_file, num_threads)
             file_base = os.path.basename(image_file).split(os.extsep)
             timepoint = file_base[0].split('_')[-1]
             cropped_mip = np.array(a).max(0)[crop_y_min:crop_y_max, crop_x_min:crop_x_max]
@@ -137,7 +137,8 @@ def visualize_cropboxes(orig_image_dir: os.PathLike, crop_dir: os.PathLike, outp
 
 def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index,
                    time_min: int = 0, time_max: int = -1, offset: int = 0,
-                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif', do_rescale: bool = True):
+                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif',
+                   do_rescale: bool = True, num_threads: int = 1):
     try:
         vpairs = pd.read_csv(os.path.join(crop_dir, 'vpairs.csv'), index_col=[0])
         hpairs = pd.read_csv(os.path.join(crop_dir, 'hpairs.csv'), index_col=[0])
@@ -163,7 +164,7 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
         for im in images[time_min:time_max + 1]:
             image_file = str(im)
             print('Processing:', image_file, flush=True)
-            a = read_image(image_file)
+            a = read_image(image_file, num_threads)
             cur_box = a[:, crop_y_min:crop_y_max, crop_x_min:crop_x_max]
             file_base = os.path.basename(image_file).split(os.extsep)
             if do_rescale:
@@ -179,8 +180,8 @@ def generate_crops(image_dir: str, crop_dir: str, output_dir: str, cropbox_index
         print('Cropbox visualization produced and error:', e)
 
 
-def rescale_images(image_dir: str, output_dir: str, time_min: int = 0, time_max: int = -1,
-                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif'):
+def rescale_all_images(image_dir: str, output_dir: str, time_min: int = 0, time_max: int = -1,
+                   x_y_sc: float = 0.208, z_sc: float = 2, output_format: str = 'tif', num_threads: int = 1):
     try:
         images = [os.path.join(dp, f)
                   for dp, dn, filenames in os.walk(image_dir)
@@ -196,7 +197,7 @@ def rescale_images(image_dir: str, output_dir: str, time_min: int = 0, time_max:
         for im in images[time_min:time_max + 1]:
             image_file = str(im)
             print('Processing:', image_file, flush=True)
-            a = read_image(image_file)
+            a = read_image(image_file, num_threads)
             file_base = os.path.basename(image_file).split(os.extsep)
             cur_box_resc_low = rescale(a, (1/(2*x_y_sc), 1/(2*z_sc), 1/(2*z_sc)),
                                        preserve_range = True,

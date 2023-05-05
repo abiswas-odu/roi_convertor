@@ -23,11 +23,11 @@ def cli():
               type=click.Path(exists=True,dir_okay=True,readable=True),
               help="ROI output directory.")
 @click.option("--num_threads","-n", required=False, default=4, type=click.INT,
-              help="The first timestamp to use for cropping.")
-def generate_roi(segmentation_image_file, output_dir):
+              help="The number of threads.")
+def generate_roi(segmentation_image_file, output_dir, num_threads):
     click.echo('Invoking ROI generation...')
     t0 = time()
-    roi_dir = gen_roi(segmentation_image_file, output_dir)
+    roi_dir = gen_roi(segmentation_image_file, output_dir, num_threads)
     t1 = time() - t0
     click.echo('ROIs generated here:' + roi_dir)
     click.echo("Time elapsed: " + str(t1))
@@ -45,7 +45,9 @@ def generate_roi(segmentation_image_file, output_dir):
 @click.option("--output_format", required=False, default="tif",
               type=click.Choice(["klb","h5","tif","npy"]),
               help="The output format klb/h5/tif/npy.")
-def generate_mask(orig_image, roi_dir, output_dir, output_format):
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The number of threads.")
+def generate_mask(orig_image, roi_dir, output_dir, output_format, num_threads):
     click.echo('Invoking mask generation...')
     t0 = time()
     if output_dir and roi_dir and os.path.isdir(roi_dir) and os.path.isdir(output_dir):
@@ -61,10 +63,10 @@ def generate_mask(orig_image, roi_dir, output_dir, output_format):
                 file_name = os.path.basename(image_file)
                 file_prefix = os.path.splitext(file_name)[0]
                 file_ext = os.path.splitext(file_name)[1]
-                hand_corrected_tif = gen_mask_core(roi_dir, image_file, output_dir, output_format)
+                hand_corrected_tif = gen_mask_core(roi_dir, image_file, output_dir, output_format, num_threads)
                 click.echo('Hand corrected mask generated:' + hand_corrected_tif)
         else:
-            hand_corrected_tif = gen_mask_core(roi_dir, orig_image, output_dir, output_format)
+            hand_corrected_tif = gen_mask_core(roi_dir, orig_image, output_dir, output_format, num_threads)
             click.echo('Hand corrected mask generated:' + hand_corrected_tif)
     else:
         if os.path.isdir(orig_image):
@@ -80,12 +82,12 @@ def generate_mask(orig_image, roi_dir, output_dir, output_format):
                 file_name = os.path.basename(image_file)
                 file_prefix = os.path.splitext(file_name)[0]
                 file_ext = os.path.splitext(file_name)[1]
-                hand_corrected_tif = gen_mask_core(roi_dir, image_file, orig_image, output_format)
+                hand_corrected_tif = gen_mask_core(roi_dir, image_file, orig_image, output_format, num_threads)
                 click.echo('Hand corrected mask generated:' + hand_corrected_tif)
         else:
             base_dir = os.path.dirname(orig_image)
             roi_dir = os.path.join(base_dir, "stardist_rois")
-            hand_corrected_tif = gen_mask_core(roi_dir, orig_image, base_dir, output_format)
+            hand_corrected_tif = gen_mask_core(roi_dir, orig_image, base_dir, output_format, num_threads)
             click.echo('Hand corrected mask generated:' + hand_corrected_tif)
     t1 = time() - t0
     click.echo("Time elapsed: " + str(t1))
@@ -103,7 +105,9 @@ def generate_mask(orig_image, roi_dir, output_dir, output_format):
               help= "Output file name.")
 @click.option("--check_fn","-cfn", is_flag=True,
               help="Run false negative detection.", default = False)
-def generate_analytics(orig_image, segmentation_image, output_file, check_fn):
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The number of threads.")
+def generate_analytics(orig_image, segmentation_image, output_file, check_fn, num_threads):
     click.echo('Invoking analytics generation...')
     t0 = time()
     if os.path.isdir(orig_image) and os.path.isdir(segmentation_image):
@@ -119,15 +123,19 @@ def generate_analytics(orig_image, segmentation_image, output_file, check_fn):
             file_prefix = os.path.splitext(file_name)[0]
             file_ext = os.path.splitext(file_name)[1]
             segmentation_image_file = os.path.join(segmentation_image,file_prefix + ".label" + file_ext)
-            segmentation_image_file_corrected = os.path.join(segmentation_image,file_prefix + "_SegmentationCorrected" + file_ext)
+            segmentation_image_file_corrected = os.path.join(segmentation_image,file_prefix +
+                                                             "_SegmentationCorrected" + file_ext)
             if os.path.isfile(segmentation_image_file):
-                append_hand_correction_guide(segmentation_image_file, image_file, output_file, check_fn)
+                append_hand_correction_guide(segmentation_image_file, image_file,
+                                             output_file, check_fn, num_threads)
             elif os.path.isfile(segmentation_image_file_corrected):
-                append_hand_correction_guide(segmentation_image_file_corrected, image_file, output_file, check_fn)
+                append_hand_correction_guide(segmentation_image_file_corrected, image_file,
+                                             output_file, check_fn, num_threads)
             else:
                 click.echo('Segmentation output not found. Expected file:' + segmentation_image_file)
     elif os.path.isfile(orig_image) and os.path.isfile(segmentation_image):
-        append_hand_correction_guide(segmentation_image, orig_image, output_file, check_fn)
+        append_hand_correction_guide(segmentation_image, orig_image,
+                                     output_file, check_fn, num_threads)
     else:
         click.echo('Please provide either input files or directories, combinations are not supported.')
     t1 = time() - t0
@@ -206,13 +214,15 @@ def roi_diff(orig_roi_dir, corrected_roi_dir):
             help="The size of the uniform filter applied to the images.")
 @click.option("--filter_threshold","-thresh", required=False, default=0.1, type=click.FLOAT, show_default=True,
             help="The thresholding applied to the image after the uniform filtering.")
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The number of threads.")
 def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
-                  generate_plots, filter_window_size, filter_threshold):
+                  generate_plots, filter_window_size, filter_threshold, num_threads):
 
     click.echo('Invoking crop box generation...')
     t0 = time()
     box_count = gen_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
-                  generate_plots, filter_window_size, filter_threshold)
+                  generate_plots, filter_window_size, filter_threshold, num_threads)
     t1 = time() - t0
 
     click.echo('Crop boxes generated. Number of boxes: ' + str(box_count))
@@ -250,12 +260,14 @@ def generate_cropboxes(orig_image_dir, output_dir, timestamp_min, timestamp_max,
               help="The multiple used for Z axis scaling.")
 @click.option("--no_rescale_crop", "-no_rescale", is_flag=True,
               help="The multiple used for Z axis scaling.")
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The number of threads.")
 def crop_images(orig_image_dir, crop_file_dir, cropbox_index, output_dir, output_format,
-                timestamp_min, timestamp_max, offset, x_y_scaling, z_scaling, no_rescale_crop):
+                timestamp_min, timestamp_max, offset, x_y_scaling, z_scaling, no_rescale_crop, num_threads):
     click.echo('Cropping images...')
     t0 = time()
     generate_crops(orig_image_dir, crop_file_dir, output_dir, cropbox_index, timestamp_min,
-                   timestamp_max, offset, x_y_scaling, z_scaling, output_format, not no_rescale_crop)
+                   timestamp_max, offset, x_y_scaling, z_scaling, output_format, not no_rescale_crop, num_threads)
     t1 = time() - t0
     click.echo('Cropped files generated here:' + output_dir)
     click.echo("Time elapsed: " + str(t1))
@@ -278,12 +290,14 @@ def crop_images(orig_image_dir, crop_file_dir, cropbox_index, output_dir, output
               help="The multiple used for X and Y axis scaling.")
 @click.option("--z_scaling","-z_sc", required=False, default=2, type=click.FLOAT, show_default=True,
               help="The multiple used for Z axis scaling.")
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The number of threads.")
 def rescale_images(orig_image_dir, output_dir, output_format,
-                timestamp_min, timestamp_max, x_y_scaling, z_scaling):
+                timestamp_min, timestamp_max, x_y_scaling, z_scaling, num_threads):
     click.echo('Rescale images...')
     t0 = time()
-    rescale_images(orig_image_dir, output_dir, timestamp_min, timestamp_max,
-                   x_y_scaling, z_scaling, output_format)
+    rescale_all_images(orig_image_dir, output_dir, timestamp_min, timestamp_max,
+                   x_y_scaling, z_scaling, output_format, num_threads)
     t1 = time() - t0
     click.echo('Rescaled files generated here:' + output_dir)
     click.echo("Time elapsed: " + str(t1))
@@ -307,11 +321,14 @@ def rescale_images(orig_image_dir, output_dir, output_format,
               help="The last timestamp to use for cropping. Setting -1 means use to the last available.")
 @click.option("--offset","-of", required=False, default=150, type=click.INT,
               help="The offset used during cropping.")
-def visualize_crops(orig_image_dir, crop_file_dir, output_dir, cropbox_index, timestamp_min, timestamp_max, offset):
+@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+              help="The number of threads.")
+def visualize_crops(orig_image_dir, crop_file_dir, output_dir, cropbox_index,
+                    timestamp_min, timestamp_max, offset, num_threads):
     click.echo('Generating cropped MIP images...')
     t0 = time()
     visualize_cropboxes(orig_image_dir, crop_file_dir, output_dir, 
-                        cropbox_index, timestamp_min, timestamp_max, offset)
+                        cropbox_index, timestamp_min, timestamp_max, offset, num_threads)
     t1 = time() - t0
     click.echo('Cropped MIPs generated here:' + crop_file_dir)
     click.echo("Time elapsed: " + str(t1))
