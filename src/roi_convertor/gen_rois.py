@@ -64,11 +64,13 @@ def roi_generator_core(Xi, file_prefix, output_dir):
     return label_summary_dict
 
 
-def gen_roi(input_file, output_dir=""):
+def gen_roi(input_file: os.PathLike, output_dir: os.PathLike = "", num_threads: int = 1):
     """Generate the ROI files for each frame of the image in in klb/h5/tif/npy format. It creates a folder stardist_rois
     in the same folder as the input image.
     Args:
         image_file: Path to the image file in klb/h5/tif/npy format with the same extensions respectively.
+        output_dir: Output dir.
+        num_threads: Number of threads.
     Returns:
         Directory where the ROI files are saved
     """
@@ -80,7 +82,7 @@ def gen_roi(input_file, output_dir=""):
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-    Xi = read_image(input_file)
+    Xi = read_image(input_file, num_threads)
     label_summary_dict = roi_generator_core(Xi,file_prefix,output_dir)
 
     with open(os.path.join(base_dir,file_prefix + '_summary.csv'), 'w') as out_f:

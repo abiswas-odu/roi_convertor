@@ -6,9 +6,9 @@ from .io_utils import read_image
 import os
 
 
-def append_hand_correction_guide(segmentation_image, orig_image, output_file, runFNTest=False):
-    seg = read_image(segmentation_image)
-    raw = read_image(orig_image)
+def append_hand_correction_guide(segmentation_image, orig_image, output_file, runFNTest=False, num_threads: int = 1):
+    seg = read_image(segmentation_image, num_threads)
+    raw = read_image(orig_image, num_threads)
     label_ids, exclude_ids, numcells, frame_false_negative = gen_hand_correction_guide(seg, raw)
     file_name = os.path.basename(segmentation_image)
     file_prefix = os.path.splitext(file_name)[0]
