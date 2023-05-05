@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "roi_convertor"
-version = "1.6"
+version = "1.7"
 description = "Perform ROI conversion and cropping."
 authors = ["Posfai Lab development team. <ab50@princeton.edu>"]
 readme = "README.md"
