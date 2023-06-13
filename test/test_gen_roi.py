@@ -5,13 +5,14 @@ import shutil
 
 
 def test_gen_roi_tif():
+    num_threads = 16
     base_dir = 'data/generate_roi'
     segmented_file = os.path.join(base_dir, 'klbOut_Cam_Long_00258.lux.label.tif')
     output_dir = os.path.join(base_dir, 'test_output')
     if os.path.isdir(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
-    gen_roi(segmented_file, output_dir)
+    gen_roi(segmented_file, output_dir, num_threads)
 
     # Compare the summary file
     file_name = os.path.basename(segmented_file)
@@ -23,13 +24,14 @@ def test_gen_roi_tif():
 
 
 def test_gen_roi_klb():
+    num_threads = 16
     base_dir = 'data/generate_roi'
     segmented_file = os.path.join(base_dir, 'klbOut_Cam_Long_00258.lux.label.klb')
     output_dir = os.path.join(base_dir, 'test_output')
     if os.path.isdir(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
-    gen_roi(segmented_file, output_dir)
+    gen_roi(segmented_file, output_dir, num_threads)
 
     # Compare the summary file
     file_name = os.path.basename(segmented_file)

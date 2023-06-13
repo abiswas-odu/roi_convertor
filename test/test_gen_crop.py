@@ -29,19 +29,21 @@ def test_gen_crop_tif():
 
 
 def test_gen_crop_klb():
+    num_threads = 16
     orig_image_dir = "data/cropping/full_klbs"
     crop_dir = "data/cropping/compare_cropboxes"
     out_image_dir = "data/cropping/klb_crops"
     if os.path.isdir(out_image_dir):
         shutil.rmtree(out_image_dir)
     os.makedirs(out_image_dir)
-    generate_crops(orig_image_dir, crop_dir, out_image_dir, 0, 0, 10, 150, 0.208, 2, 'klb', False)
+    generate_crops(orig_image_dir, crop_dir, out_image_dir, 0, 0, 10, 150, 0.208, 2, 'klb', False, num_threads)
 
     comparison_dir = "data/cropping/compare_crops_klb"
     dir_filesize_cmp(out_image_dir, comparison_dir)
 
 
 def test_gen_crop_mips():
+    num_threads = 16
     orig_image_dir = "data/cropping/full_klbs"
     crop_dir = "data/cropping/compare_cropboxes"
     out_image_dir = "data/cropping/mip_crops"
@@ -49,7 +51,7 @@ def test_gen_crop_mips():
         shutil.rmtree(out_image_dir)
     os.makedirs(out_image_dir)
 
-    visualize_cropboxes(orig_image_dir, crop_dir, out_image_dir, 0, 0, 10, 150)
+    visualize_cropboxes(orig_image_dir, crop_dir, out_image_dir, 0, 0, 10, 150, num_threads)
 
     comparison_dir = "data/cropping/compare_mip_crops"
     dir_filesize_cmp(out_image_dir, comparison_dir)

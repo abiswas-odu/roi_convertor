@@ -5,6 +5,7 @@ import scipy.ndimage as ndimage
 import matplotlib.pyplot as plt
 import pandas as pd
 from skimage.transform import rescale
+from PIL import Image
 
 def to_even(x):
     return 2*int(round(x/2))
@@ -129,8 +130,11 @@ def visualize_cropboxes(orig_image_dir: os.PathLike, crop_dir: os.PathLike, outp
             file_base = os.path.basename(image_file).split(os.extsep)
             timepoint = file_base[0].split('_')[-1]
             cropped_mip = np.array(a).max(0)[crop_y_min:crop_y_max, crop_x_min:crop_x_max]
-            cropped_mip = np.expand_dims(cropped_mip, axis=0)
-            write_image(cropped_mip, os.path.join(output_dir, file_base[0] + '_crop_MIP'), 'tif')
+            # Prodice the MIP in png format
+            mip_to_file = os.path.join(output_dir, file_base[0] + '_crop_MIP.png')
+            mipOut = np.ascontiguousarray(cropped_mip)
+            mipIMG = Image.fromarray(mipOut)
+            mipIMG.save(mip_to_file)
     except Exception as e:
         print('Cropbox visualization produced and error:', e)
 
