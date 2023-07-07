@@ -78,7 +78,7 @@ def gen_roi(input_file: os.PathLike, output_dir: os.PathLike = "", num_threads: 
     file_name = os.path.basename(input_file)
     file_prefix = os.path.splitext(file_name)[0]
     if not output_dir:
-        output_dir = os.path.join(base_dir,"stardist_rois")
+        output_dir = os.path.join(base_dir, "stardist_rois")
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 

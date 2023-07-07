@@ -16,18 +16,28 @@ def cli():
 
 
 @cli.command()
-@click.option('--segmentation_image_file',required=True,
+@click.option('--segmentation_image',required=True,
               type=click.Path(exists=True,file_okay=True,readable=True),
-              help="Segmentation output from Stardist.")
+              help="Segmentation image or directory output from Stardist.")
 @click.option('--output_dir',required=False,
               type=click.Path(exists=True,dir_okay=True,readable=True),
               help="ROI output directory.")
 @click.option("--num_threads","-n", required=False, default=4, type=click.INT,
               help="The number of threads.")
-def generate_roi(segmentation_image_file, output_dir, num_threads):
+def generate_roi(segmentation_image, output_dir, num_threads):
     click.echo('Invoking ROI generation...')
     t0 = time()
-    roi_dir = gen_roi(segmentation_image_file, output_dir, num_threads)
+    if os.path.isdir(segmentation_image):
+        result = [os.path.join(dp, f)
+                  for dp, dn, filenames in os.walk(segmentation_image)
+                  for f in filenames if (os.path.splitext(f)[1] == '.klb' or
+                                         os.path.splitext(f)[1] == '.h5' or
+                                         os.path.splitext(f)[1] == '.tif' or
+                                         os.path.splitext(f)[1] == '.npy')]
+        for image_file in result:
+            roi_dir = gen_roi(image_file, output_dir, num_threads)
+    else:
+        roi_dir = gen_roi(segmentation_image, output_dir, num_threads)
     t1 = time() - t0
     click.echo('ROIs generated here:' + roi_dir)
     click.echo("Time elapsed: " + str(t1))
