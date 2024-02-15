@@ -91,3 +91,11 @@ def write_image(labels: np.ndarray, out_image_file:os.PathLike, output_format:st
         segmentation_file_name = out_image_file + ".tif"
         save_tiff_imagej_compatible(segmentation_file_name, labels.astype('uint16'), axes='ZYX')
     return segmentation_file_name
+
+def get_filename_components(image_file_str):
+    cur_name = os.path.basename(image_file_str)
+    file_prefix = os.path.splitext(cur_name)[0]
+    file_ext = os.path.splitext(cur_name)[1]
+    file_base = os.path.basename(cur_name).split(os.extsep)
+    time_index = int(file_base[0].split('_')[-1])
+    return file_base, file_prefix, file_ext, time_index

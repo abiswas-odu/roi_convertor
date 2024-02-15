@@ -30,7 +30,7 @@ You can run the following commands to install the tool in your own conda environ
 
 #### Windows Install
 
-1. Download and install **Python 3.9** version of Miniconda for Windows: https://docs.conda.io/en/latest/miniconda.html#windows-installers
+1. Download and install **Python 3.11** version of Miniconda for Windows: https://docs.conda.io/en/latest/miniconda.html#windows-installers
 
 2. **Login**, download and install Visual Studio 2022 Professional to build pyklb: https://visualstudio.microsoft.com/vs 
 
@@ -48,7 +48,7 @@ roi_convert --help
 
 #### MacOS Install
 
-1. Download and install **Python 3.9** version of Miniconda for MacOS: https://docs.conda.io/en/latest/miniconda.html#macos-installers
+1. Download and install **Python 3.11** version of Miniconda for MacOS: https://docs.conda.io/en/latest/miniconda.html#macos-installers
 
 2. Open "Terminal" and create a conda environment and activate it:
 ```
@@ -72,7 +72,7 @@ roi_convert --help
 This produces the ROIs in a directory named ```stardist_rois``` in same directory as the input image
 ```
 roi_convert generate-roi 
---orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif
+--segmentation_image /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif
 ```
 
 The input can be in klb/h5/tif/npy formats with these extensions. 
@@ -82,7 +82,7 @@ The input can be in klb/h5/tif/npy formats with these extensions.
 This produces the ROIs in a directory of your choice and in a format of your choice.
 ```
 roi_convert generate-roi 
---orig_image_file /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif 
+--segmentation_image /projects/LIGHTSHEET/posfailab/ab50/tools/roi_convertor/test/klbOut_Cam_Long_00257.lux.label.tif 
 --output_dir test_rois
 ```
 

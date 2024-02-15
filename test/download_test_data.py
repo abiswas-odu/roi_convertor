@@ -5,7 +5,6 @@ import os
 
 if __name__ == '__main__':
     test_data_url = "https://drive.google.com/uc?id=1hmjpBgEZCow3JbJTSot1k1S-vUFQV4-9"
-    test_data_url = "https://drive.google.com/uc?id=14lYZ3SlK0aDMgjkT2xsMaowdz1pztAnA"
     output_zip = 'roi_convertor_test_v1.7.zip'
     gdown.download(test_data_url, output_zip, quiet=False)
     with zipfile.ZipFile(output_zip, 'r') as zip_ref:

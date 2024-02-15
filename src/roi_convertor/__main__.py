@@ -16,13 +16,13 @@ def cli():
 
 
 @cli.command()
-@click.option('--segmentation_image',required=True,
-              type=click.Path(exists=True,file_okay=True,readable=True),
+@click.option('--segmentation_image', required=True,
+              type=click.Path(exists=True, file_okay=True, readable=True),
               help="Segmentation image or directory output from Stardist.")
-@click.option('--output_dir',required=False,
-              type=click.Path(exists=True,dir_okay=True,readable=True),
+@click.option('--output_dir', required=False,
+              type=click.Path(exists=True, dir_okay=True, readable=True),
               help="ROI output directory.")
-@click.option("--num_threads","-n", required=False, default=4, type=click.INT,
+@click.option("--num_threads", "-n", required=False, default=4, type=click.INT,
               help="The number of threads.")
 def generate_roi(segmentation_image, output_dir, num_threads):
     click.echo('Invoking ROI generation...')
