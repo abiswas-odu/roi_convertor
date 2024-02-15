@@ -19,10 +19,8 @@ tifffile = "^2021.10.4"
 scikit-image = "^0.18.3"
 pandas = "^1.3.3"
 h5py = "^3.4.0"
+pyklb = { git = "https://github.com/abiswas-odu/pyklb.git", rev = "skbuild" }
 importlib-metadata = {version = "^4.8.2", python = "<3.8"}
-
-[tool.poetry.extras]
-pyklb = [git = "https://github.com/abiswas-odu/pyklb.git", rev = "skbuild" ]
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
